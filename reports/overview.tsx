@@ -19,6 +19,8 @@ import innovators from "../actors/customers/innovators/profile";
 import early_adopters from "../actors/customers/early_adopters/profile";
 import early_majority from "../actors/customers/early_majority/profile";
 import customer from "../actors/customers/profile";
+import supplier from "../actors/suppliers/profile";
+import investor from "../actors/investors/profile";
 
 const profiles: UserProfile[] = [ceo, cto, cmo, chief_of_staff, ciso, business_analyst, copywriter, marketing_strategist, frontend_eng, ux_researcher, ux_designer, product_manager, techlead];
 
@@ -31,6 +33,20 @@ const customers: UserProfile[] = [innovators, early_adopters, early_majority, cu
 
 console.log("\nThe Customers:")
 customers.forEach(profile => {
+    console.log(profile.name, profile.title);
+});
+
+const suppliers: UserProfile[] = [supplier];
+
+console.log("\nThe Suppliers:")
+suppliers.forEach(profile => {
+    console.log(profile.name, profile.title);
+});
+
+const investors: UserProfile[] = [investor];
+
+console.log("\nThe Investors:")
+investors.forEach(profile => {
     console.log(profile.name, profile.title);
 });
 
