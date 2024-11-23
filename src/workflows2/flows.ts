@@ -15,15 +15,19 @@ import frontend_eng from "../actors/team/frontend-eng/profile";
 import chief_of_staff from "../actors/team/chief-of-staff/profile";
 import ciso from "../actors/team/ciso/profile";
 
+import { Artifact } from "../artifacts/artifacts";
+
 class Flow {
     name: string;
     description: string;
     from: UserProfile;
     to: UserProfile;
+    artifacts: string[];
     timeout_seconds: number;
-    constructor(name: string, description: string, from: UserProfile, to: UserProfile, timeout_seconds: number) {
+    constructor(name: string, description: string, artifacts: string[], from: UserProfile, to: UserProfile, timeout_seconds: number) {
         this.name = name;
         this.description = description;
+        this.artifacts = artifacts;
         this.from = from;
         this.to = to;
         this.timeout_seconds = timeout_seconds;
@@ -35,6 +39,7 @@ const flows: Flow[] = [];
 flows.push(new Flow(
     "brand approval",
     "ceo approves the brand",
+    ['Brand'],
     ceo,
     cmo,
     10

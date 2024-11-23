@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "ES2017", // Specify ECMAScript target version
+        "module": "commonjs", // Use CommonJS module system
+        "outDir": "./dist", // Redirect output structure to 'dist' directory
+        "rootDir": "./src", // Specify the root directory of input files
+        "strict": true, // Enable strict type-checking options
+        "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
+        "experimentalDecorators": true, // Enable experimental support for decorators
+        "emitDecoratorMetadata": true, // Emit design-type metadata for decorated declarations
+        "sourceMap": true, // Generate source map files
+        "skipLibCheck": true, // Skip type checking of declaration files
+        "forceConsistentCasingInFileNames": true // Disallow inconsistently-cased references to the same file
+    },
+    "include": [
+        "src/**/*",
+        "src/artifacts",
+        "bin/compile_types.tsx"
+    ], // Include all TypeScript files in 'src' directory
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ] // Exclude 'node_modules' and test files
+}

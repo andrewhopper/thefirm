@@ -1,3 +1,8 @@
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+import * as fs from 'fs';
+
+import 'reflect-metadata';
 
 import { UserProfile } from "../actors/user_profile";
 import ceo from "../actors/team/ceo/profile";
@@ -21,6 +26,7 @@ import early_majority from "../actors/customers/early_majority/profile";
 import customer from "../actors/customers/profile";
 import supplier from "../actors/suppliers/profile";
 import investor from "../actors/investors/profile";
+import { DesignArtifact, Brand } from "../artifacts/artifacts";
 
 const profiles: UserProfile[] = [ceo, cto, cmo, chief_of_staff, ciso, business_analyst, copywriter, marketing_strategist, frontend_eng, ux_researcher, ux_designer, product_manager, techlead];
 
@@ -50,10 +56,72 @@ investors.forEach(profile => {
     console.log(profile.name, profile.title);
 });
 
+
+
+
+// Mapping of class names to their constructors
+const classMap: { [key: string]: any } = {
+    DesignArtifact: DesignArtifact,
+    Brand: Brand,
+    // Add other classes here if needed
+};
+
+// Function to dynamically print class attributes
+function printClassAttributes(className: string) {
+    const cls = classMap[className]; // Get the class constructor
+
+    if (!cls) {
+        console.error(`Class ${className} not found.`);
+        return;
+    }
+
+    const instance = new cls(); // Create an instance of the class
+
+    // Get the own property names of the instance
+    const properties = Object.getOwnPropertyNames(instance);
+
+    console.log(`Attributes of ${className}:`);
+    properties.forEach((prop) => {
+        const type = Reflect.getMetadata('design:type', instance, prop);
+        const typeName = type && type.name ? type.name : 'unknown';
+        console.log(`- ${prop}: ${instance[prop]} (Type: ${typeName})`);
+    });
+}
+
+// Load and parse the artifacts types from JSON
+
+
+const artifactsJsonUrl = new URL('../../dist/artifacts.json', import.meta.url);
+const artifactsJson = JSON.parse(fs.readFileSync(artifactsJsonUrl, 'utf-8'));
+
+// Create a type mapping from the JSON data
+const artifactTypes: { [key: string]: { [key: string]: string } } = {};
+artifactsJson.forEach((classInfo: any) => {
+    artifactTypes[classInfo.name] = {};
+    classInfo.properties.forEach((prop: any) => {
+        artifactTypes[classInfo.name][prop.name] = prop.type;
+    });
+});
+
+// Function to get type information for an artifact
+function getArtifactTypes(artifactName: string) {
+    if (artifactTypes[artifactName]) {
+        return artifactTypes[artifactName];
+    }
+    console.warn(`No type information found for artifact: ${artifactName}`);
+    return {};
+}
+
+
+
 console.log("\nThe Workflows:");
 flows.forEach(flow => {
     console.log(flow.name, flow.description, flow.from.name, flow.to.name, flow.timeout_seconds);
+    flow.artifacts.forEach(artifact => {
+        console.log(getArtifactTypes(artifact));
+    });
 });
+
 
 
 
