@@ -5,8 +5,7 @@ This repository contains the code for thefirm, a tool for building and managing 
 ## How to run the code
 
 1. Clone the repository
-2. Install the dependencies using `npm install`
-3. Run the code using `npm start`
+2. Run the overview report: `tsx reports/overview.tsx`
 
 ## Overview
 
