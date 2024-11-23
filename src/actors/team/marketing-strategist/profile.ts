@@ -16,6 +16,6 @@ const a: UserProfileAttributes = {
     preferred_strategies: ['marketing_strategy', 'marketing_planning', 'marketing_analysis']
 }
 
-const marketing_strategist = new UserProfile("John", "Marketing Strategist", a);
+const marketing_strategist = new UserProfile("Lilly", "Marketing Strategist", a);
 
 export default marketing_strategist;

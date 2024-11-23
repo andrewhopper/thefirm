@@ -115,12 +115,45 @@ export interface UserProfileAttributes {
     preferred_strategies: string[]; // strategies the user prefers to use
 }
 
+const roboticNames = [
+    "RoboRachel",
+    "CyberChloe",
+    "AIAshley",
+    "BinaryBen",
+    "ComputerCarl",
+    "AgentAlice",
+    "DataDave",
+    "ProcessorPete",
+    "MachineMia",
+    "AlgorithmAlex",
+    "TechTessa",
+    "RoboRyan",
+    "CircuitCara",
+    "AgentAiden",
+    "BotBrenda",
+    "CyberChris",
+    "AIAnna",
+    "ComputerCole",
+    "RoboRuby",
+    "ProcessorPaul",
+    "DataDiana",
+    "BinaryBella",
+    "TechThomas",
+    "CircuitCody",
+    "MachineMark",
+    "AlgorithmAva",
+    "BotBrandon",
+    "CyberCassie",
+    "AIAndrew",
+    "RoboRose"
+];
+
 class UserProfile {
     name: string;
     title: string;
     attributes: UserProfileAttributes;
     constructor(name: string, title: string, attributes: UserProfileAttributes) {
-        this.name = name;
+        this.name = roboticNames[Math.floor(Math.random() * roboticNames.length)];
         this.title = title;
         this.attributes = attributes;
     }

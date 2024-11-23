@@ -115,19 +115,20 @@ function getArtifactTypes(artifactName: string) {
 
 
 const generatePrompt = (artifact: string, artifact_schema: string, context: any, requester: UserProfile) => {
-    return "You are a " + requester.name + " who's title is " + requester.title + ". " +
-        " \nYou are generating a " + artifact + " artifact. The context is " + context + ". "
-        + "\nPlease create 5 versions of the artifact, each more refined than the last. " +
-        " \nReturn the artifact in JSON format using the following schema: " + artifact_schema;
+    return "\n\nYou are a " + requester.name + " who's title is " + requester.title + ". " +
+        " \n\nYou are generating a " + artifact + " artifact. The context is " + context + ". "
+        + "\n\nPlease create 5 versions of the artifact, each more refined than the last. " +
+        " \n\nReturn the artifact in JSON format using the following schema: " + artifact_schema + "\n";
 }
 
 
 console.log("\nThe Workflows:");
 flows.forEach(flow => {
+    console.log("\n\n---------------------------------- \n\n");
     console.log(flow.name, flow.description, flow.from.name, flow.to.name, flow.timeout_seconds);
     flow.artifacts.forEach(artifact => {
         console.log(getArtifactTypes(artifact));
-        console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), "Research the market for todo list apps.", ceo));
+        console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), flow.description, flow.from));
     });
 });
 

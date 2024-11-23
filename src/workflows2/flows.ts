@@ -36,11 +36,22 @@ class Flow {
 
 const flows: Flow[] = [];
 
+// flows.push(new Flow(
+//     "brand approval",
+//     "ceo approves the brand",
+//     ['Brand'],
+//     ceo,
+//     cmo,
+//     10
+// ));
+
+
+// define the market research flow
 flows.push(new Flow(
-    "brand approval",
-    "ceo approves the brand",
-    ['Brand'],
-    ceo,
+    "market research",
+    "research the market for todo list apps",
+    ['ResearchArtifact'],
+    marketing_strategist,
     cmo,
     10
 ));

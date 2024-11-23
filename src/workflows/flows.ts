@@ -65,5 +65,16 @@ flows.push(new Flow(
     10
 ));
 
+
+flows.push(new Flow(
+    "ux design for login page",
+    "ux designer designs the login page",
+    ['DesignArtifact'],
+    ux_designer,
+    cmo,
+    10
+));
+
+
 export { flows };
 
