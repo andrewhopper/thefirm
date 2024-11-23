@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const cpo: UserProfile = {
+const a: UserProfileAttributes = {
     role: "chief product officer",
     responsibilities: "manage the company's product",
     mbti_type: "ENTJ",
@@ -15,5 +15,7 @@ const cpo: UserProfile = {
     preferred_tools: ['notion', 'google_docs', 'excel'],
     preferred_strategies: ['product_management', 'agile_product_management', 'lean_product_management']
 }
+
+const cpo = new UserProfile("John", "CPO", a);
 
 export default cpo;

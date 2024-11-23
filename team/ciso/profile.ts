@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const ciso: UserProfile = {
+const a: UserProfileAttributes = {
     role: "chief information security officer",
     responsibilities: "manage the company's information security",
     mbti_type: "ENTJ",
@@ -15,5 +15,7 @@ const ciso: UserProfile = {
     preferred_tools: ['excel', 'powerpoint', 'notion'],
     preferred_strategies: ['iso_27001', 'iso_27002', 'iso_27003', 'iso_27004', 'iso_27005', 'iso_27006', 'iso_27007', 'iso_27008', 'iso_27009']
 }
+
+const ciso = new UserProfile("John", "CISO", a);
 
 export default ciso;

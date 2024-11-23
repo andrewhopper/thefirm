@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const copywriter: UserProfile = {
+const a: UserProfileAttributes = {
     role: "copywriter",
     responsibilities: "write copy for the company",
     mbti_type: "ENTJ",
@@ -15,5 +15,7 @@ const copywriter: UserProfile = {
     preferred_tools: ['notion', 'google_docs', 'copy.ai'],
     preferred_strategies: ['seo', 'copywriting_techniques', 'content_marketing']
 }
+
+const copywriter = new UserProfile("John", "Copywriter", a);
 
 export default copywriter;

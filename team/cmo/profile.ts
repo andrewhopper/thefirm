@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const cmo: UserProfile = {
+const a: UserProfileAttributes = {
     role: "chief marketing officer",
     responsibilities: "manage the company's marketing",
     mbti_type: "ENTJ",
@@ -15,5 +15,7 @@ const cmo: UserProfile = {
     preferred_tools: ['notion', 'google_docs', 'figma'],
     preferred_strategies: ['marketing_plan', 'marketing_strategy', 'marketing_campaign']
 }
+
+const cmo = new UserProfile("John", "CMO", a);
 
 export default cmo;

@@ -119,7 +119,9 @@ class UserProfile {
     name: string;
     title: string;
     attributes: UserProfileAttributes;
-    constructor(role: string, attributes: UserProfileAttributes) {
+    constructor(name: string, title: string, attributes: UserProfileAttributes) {
+        this.name = name;
+        this.title = title;
         this.attributes = attributes;
     }
 }

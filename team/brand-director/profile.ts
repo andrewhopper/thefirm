@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const backend_eng: UserProfile = {
+const a: UserProfileAttributes = {
     role: "brand director",
     responsibilities: "create and enforce the brand",
     mbti_type: "ENFP",
@@ -16,4 +16,4 @@ const backend_eng: UserProfile = {
     preferred_strategies: ['user_persona', 'user centered design']
 }
 
-console.log(backend_eng);
+const bd = new UserProfile("John", "Brand Director", a);

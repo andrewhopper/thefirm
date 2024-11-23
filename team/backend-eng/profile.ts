@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const backend_eng: UserProfile = {
+const a: UserProfileAttributes = {
     role: "backend engineer",
     responsibilities: "build the backend",
     mbti_type: "INTJ",
@@ -16,4 +16,6 @@ const backend_eng: UserProfile = {
     preferred_strategies: ['test_driven_development']
 }
 
-console.log(backend_eng);
+const be = new UserProfile("James", "Backend Engineer", a);
+
+export default be;

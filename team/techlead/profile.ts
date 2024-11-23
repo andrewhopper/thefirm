@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const techlead: UserProfile = {
+const a: UserProfileAttributes = {
     role: "tech lead",
     responsibilities: "lead the company's technical team",
     mbti_type: "ENTJ",
@@ -15,5 +15,7 @@ const techlead: UserProfile = {
     preferred_tools: ['notion', 'google_docs', 'figma'],
     preferred_strategies: ['technical_specification', 'user_interface_design', 'user_experience_design']
 }
+
+const techlead = new UserProfile("John", "Tech Lead", a);
 
 export default techlead;

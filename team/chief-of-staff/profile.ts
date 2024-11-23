@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const chief_of_staff: UserProfile = {
+const a: UserProfileAttributes = {
     role: "chief of staff",
     responsibilities: "manage the company",
     mbti_type: "ENTJ",
@@ -16,4 +16,7 @@ const chief_of_staff: UserProfile = {
     preferred_strategies: ['agile_project_management', 'scrum', 'kanban']
 }
 
-export default chief_of_staff;
+const cos = new UserProfile("John", "Chief of Staff", a);
+
+export default cos;
+

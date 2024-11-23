@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const backend_eng: UserProfile = {
+const a: UserProfileAttributes = {
     role: "business analyst",
     responsibilities: "analyze the business",
     mbti_type: "ENTJ",
@@ -16,4 +16,7 @@ const backend_eng: UserProfile = {
     preferred_strategies: ['proforma', 'financial_modeling', 'gaap', 'CFA', 'CFP']
 }
 
-console.log(backend_eng);
+const ba = new UserProfile("John", "Business Analyst", a);
+
+export default ba;
+

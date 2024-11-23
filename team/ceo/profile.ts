@@ -1,7 +1,7 @@
-import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType } from "../user_profile";
+import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, PreferredTool, PreferredStrategy, AttentionToDetail, ArtifactType, UserProfileAttributes } from "../user_profile";
 import { UserProfile } from "../user_profile";
 
-const ceo: UserProfile = {
+const a: UserProfileAttributes = {
     role: "ceo",
     responsibilities: "lead the company",
     mbti_type: "ENTP",
@@ -16,4 +16,6 @@ const ceo: UserProfile = {
     preferred_strategies: ['lean_canvas', 'lean_startup_canvas', 'business_model_canvas']
 }
 
-console.log(ceo);
+const ceo = new UserProfile("John", "CEO", a);
+
+export default ceo;
