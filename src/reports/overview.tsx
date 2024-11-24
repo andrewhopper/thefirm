@@ -169,7 +169,7 @@ const generatePrompt = (artifact: string, artifact_schema: string, context: any,
     return user_profile_prompt(requester) +
         "\n\n<background> The context is " + context + ". </background>" +
         "\n\n<request>You are tasked with " + task + ".</request>" +
-        "\n\nPlease create 5 versions of the artifact, each more refined than the last.</request>" +
+        "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +
         " \n\n<formatting correct responses>You are generating a " + artifact + " artifact.Return the artifact in JSON format using the following schema: " + artifact_schema + "</formatting correct responses>";
 }
 
