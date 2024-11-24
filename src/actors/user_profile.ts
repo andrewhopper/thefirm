@@ -102,7 +102,7 @@ enum PreferredStrategy {
 
 export interface UserProfileAttributes {
     role: string; // role in the team,
-    responsibilities: string; // what the user does,
+    responsibility: string; // what the user does,
     mbti_type: string; // mbti type of the user,
     work_type: WorkType; // tactical or strategic,
     attention_to_detail: AttentionToDetail; // how much the user pays attention to detail,

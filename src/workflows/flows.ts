@@ -69,7 +69,7 @@ flows.push(new Flow(
 flows.push(new Flow(
     "ux design for login page",
     "ux designer designs the login page",
-    ['DesignArtifact'],
+    ['DesignMockup'],
     ux_designer,
     cmo,
     10

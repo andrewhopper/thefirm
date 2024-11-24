@@ -25,22 +25,24 @@ if (!sourceFile) {
     throw new Error(`Source file not found: ${filePath}`);
 }
 
+const classes: string[] = [];
+
 // Function to analyze nodes recursively
 function analyzeNode(node: ts.Node) {
     if (ts.isClassDeclaration(node) && node.name) {
         const className = node.name.text;
-        console.log(`Class: ${className}`);
+        classes.push(className);
 
         // Iterate over the class members
         node.members.forEach((member) => {
             if (ts.isPropertyDeclaration(member) && member.name) {
                 const propertyName = (member.name as ts.Identifier).text;
+
                 const symbol = checker.getSymbolAtLocation(member.name);
 
                 if (symbol) {
                     const type = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!);
                     const typeString = checker.typeToString(type);
-                    console.log(`  Property: ${propertyName} (Type: ${typeString})`);
                 }
             }
         });
@@ -62,6 +64,8 @@ function classesToJson(node: ts.Node): any[] {
             node.members.forEach((member) => {
                 if (ts.isPropertyDeclaration(member) && member.name) {
                     const propertyName = (member.name as ts.Identifier).text;
+
+
                     const symbol = checker.getSymbolAtLocation(member.name);
 
                     if (symbol) {

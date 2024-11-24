@@ -1,0 +1,351 @@
+[
+  {
+    "name": "Artifact",
+    "properties": [
+      {
+        "name": "guid",
+        "type": "string"
+      },
+      {
+        "name": "created_at",
+        "type": "Date"
+      },
+      {
+        "name": "updated_at",
+        "type": "Date"
+      },
+      {
+        "name": "creators",
+        "type": "string[]"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "number"
+      }
+    ]
+  },
+  {
+    "name": "CodeArtifact",
+    "properties": [
+      {
+        "name": "language",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "DocumentArtifact",
+    "properties": [
+      {
+        "name": "document",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "DesignArtifact",
+    "properties": [
+      {
+        "name": "design",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "Logo",
+    "properties": [
+      {
+        "name": "logo",
+        "type": "string"
+      },
+      {
+        "name": "logo_type",
+        "type": "LogoType"
+      }
+    ]
+  },
+  {
+    "name": "LogoLibrary",
+    "properties": [
+      {
+        "name": "logo_library",
+        "type": "Logo[]"
+      }
+    ]
+  },
+  {
+    "name": "Brand",
+    "properties": [
+      {
+        "name": "tone_of_voice",
+        "type": "string"
+      },
+      {
+        "name": "brand_voice",
+        "type": "string"
+      },
+      {
+        "name": "brand_promise",
+        "type": "string"
+      },
+      {
+        "name": "brand_personality",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "BrandStyleGuide",
+    "properties": [
+      {
+        "name": "color_palette",
+        "type": "string[]"
+      },
+      {
+        "name": "logo",
+        "type": "LogoLibrary"
+      },
+      {
+        "name": "brand",
+        "type": "Brand"
+      }
+    ]
+  },
+  {
+    "name": "DesignBrief",
+    "properties": [
+      {
+        "name": "brief",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "DesignMockup",
+    "properties": [
+      {
+        "name": "mockup",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "DesignStyleGuide",
+    "properties": [
+      {
+        "name": "style_guide",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "DesignPatternLibrary",
+    "properties": [
+      {
+        "name": "component_library",
+        "type": "DesignMockup[]"
+      }
+    ]
+  },
+  {
+    "name": "DesignResearch",
+    "properties": [
+      {
+        "name": "customer_segments",
+        "type": "UserProfile[]"
+      },
+      {
+        "name": "report",
+        "type": "ReportArtifact"
+      }
+    ]
+  },
+  {
+    "name": "MemoArtifact",
+    "properties": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "ReportSectionContent",
+    "properties": [
+      {
+        "name": "content",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "name": "ReportSection",
+    "properties": [
+      {
+        "name": "section_title",
+        "type": "string"
+      },
+      {
+        "name": "section_content",
+        "type": "ReportSectionContent[]"
+      },
+      {
+        "name": "position",
+        "type": "number"
+      }
+    ]
+  },
+  {
+    "name": "ReportArtifact",
+    "properties": [
+      {
+        "name": "executive_summary",
+        "type": "string"
+      },
+      {
+        "name": "sections",
+        "type": "ReportSection[]"
+      }
+    ]
+  },
+  {
+    "name": "ResearchArtifact",
+    "properties": [
+      {
+        "name": "guid",
+        "type": "string"
+      },
+      {
+        "name": "created_at",
+        "type": "Date"
+      },
+      {
+        "name": "updated_at",
+        "type": "Date"
+      },
+      {
+        "name": "authors",
+        "type": "string[]"
+      },
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "content",
+        "type": "ReportArtifact"
+      },
+      {
+        "name": "type",
+        "type": "ReportType"
+      }
+    ]
+  },
+  {
+    "name": "Slide",
+    "properties": [
+      {
+        "name": "guid",
+        "type": "string"
+      },
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "content",
+        "type": "string"
+      },
+      {
+        "name": "communication_objective",
+        "type": "string"
+      },
+      {
+        "name": "presenter_notes",
+        "type": "string"
+      },
+      {
+        "name": "position",
+        "type": "number"
+      }
+    ]
+  },
+  {
+    "name": "PresentationArtifact",
+    "properties": [
+      {
+        "name": "guid",
+        "type": "string"
+      },
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "created_at",
+        "type": "Date"
+      },
+      {
+        "name": "updated_at",
+        "type": "Date"
+      },
+      {
+        "name": "authors",
+        "type": "string[]"
+      },
+      {
+        "name": "slides",
+        "type": "Slide[]"
+      }
+    ]
+  },
+  {
+    "name": "EmailMessageArtifact",
+    "properties": [
+      {
+        "name": "guid",
+        "type": "string"
+      },
+      {
+        "name": "created_at",
+        "type": "Date"
+      },
+      {
+        "name": "updated_at",
+        "type": "Date"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      },
+      {
+        "name": "subject",
+        "type": "string"
+      },
+      {
+        "name": "body",
+        "type": "string"
+      }
+    ]
+  }
+]
