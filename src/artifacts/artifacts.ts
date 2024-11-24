@@ -337,4 +337,4 @@ class EmailMessageArtifact extends Artifact {
     }
 }
 
-export { Artifact, CodeArtifact, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, Presentation, EmailMessageArtifact, Logo, LogoLibrary, Brand, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide };
+export { Artifact, Code, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, Presentation, EmailMessageArtifact, Logo, LogoLibrary, Brand, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide };

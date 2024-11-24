@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "start": "tsx src/reports/overview.tsx",
+        "test": "echo 'No tests yet @todo'",
+        "build": "tsx ./bin/compile_types.tsx && tsx ./bin/compile_enums.tsx"
+    }
+}
