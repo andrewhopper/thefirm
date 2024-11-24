@@ -72,5 +72,33 @@ f4.artifacts = ['Code'];
 f4.by = frontend_eng;
 flows.push(f4);
 
+
+const f5 = {} as Flow;
+f5.name = "research task management for adhd";
+f5.description = "research task management for adhd";
+f5.task = "research task management for adhd";
+f5.artifacts = ['ResearchArtifact'];
+f5.by = marketing_strategist;
+flows.push(f5);
+
+const f6 = {} as Flow;
+f6.name = "research AI agents to automate devops";
+f6.description = "research AI agents to automate devops";
+f6.task = "research AI agents to automate devops";
+f6.artifacts = ['ResearchArtifact'];
+f6.by = marketing_strategist;
+flows.push(f6);
+
+
+const f7 = {} as Flow;
+f7.name = "research apps for cultivating happiness";
+f7.description = "research apps for cultivating happiness";
+f7.task = "research apps for cultivating happiness";
+f7.artifacts = ['ResearchArtifact'];
+f7.by = marketing_strategist;
+flows.push(f7);
+
+
+
 export { flows };
 

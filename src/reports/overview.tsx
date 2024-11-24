@@ -136,7 +136,7 @@ function getArtifactTypes(artifactName: string) {
                     x.push(`${key}: ${enums[value]}`);
                 }
                 else {
-                    console.warn(`No type information found for artifact: ${value}`);
+                    console.warn(`No type information found for artifact: ${artifactName} ${key}: ${value}`);
                 }
             }
         }
@@ -186,6 +186,7 @@ flows.forEach(flow => {
         });
     }
     catch (e) {
+        console.log(flow.artifacts);
         console.warn(`No type information found for artifact: ${e}`);
     }
 });

@@ -226,6 +226,7 @@ class ReportArtifact extends Artifact {
 enum ReportType {
     RESEARCH = "research",
     REPORT = "report",
+    MARKET_RESEARCH = "market_research",
     UX_RESEARCH = "ux_research",
     UX_DESIGN = "ux_design",
     UX_PROTOTYPE = "ux_prototype",
