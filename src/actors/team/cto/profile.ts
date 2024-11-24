@@ -3,7 +3,7 @@ import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
     role: "chief technology officer",
-    responsibilities: "manage the company's technology",
+    responsibility: "manage the company's technology",
     mbti_type: "ENTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,

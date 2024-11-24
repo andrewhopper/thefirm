@@ -3,7 +3,7 @@ import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
     role: "marketing strategist",
-    responsibilities: "develop and implement the company's marketing strategy",
+    responsibility: "develop and implement the company's marketing strategy",
     mbti_type: "ENTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,

@@ -3,7 +3,7 @@ import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
     role: "backend engineer",
-    responsibilities: "build the backend",
+    responsibility: "build the backend",
     mbti_type: "INTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,

@@ -35,7 +35,7 @@ class Artifact {
     }
 }
 
-class CodeArtifact extends Artifact {
+class Code extends Artifact {
     @PropertyType()
     language: string;
     @PropertyType()
@@ -337,4 +337,4 @@ class EmailMessageArtifact extends Artifact {
     }
 }
 
-export { Artifact, CodeArtifact, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, PresentationArtifact, EmailMessageArtifact, Logo, LogoLibrary, Brand, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide };
+export { Artifact, CodeArtifact, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, Presentation, EmailMessageArtifact, Logo, LogoLibrary, Brand, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide };

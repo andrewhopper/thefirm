@@ -163,9 +163,7 @@ const user_profile_prompt = (user_profile: UserProfile) => {
     r += "</userpersona>\n\n<tools>Your preferred tools are " + user_profile.attributes.preferred_tools + ". ";
     r += "</tools>\n\n<strategies>Your preferred strategies are " + user_profile.attributes.preferred_strategies + "</strategies>";
     return r;
-
 }
-
 
 const generatePrompt = (artifact: string, artifact_schema: string, context: any, task: string, requester: UserProfile) => {
     return user_profile_prompt(requester) +
@@ -178,11 +176,12 @@ const generatePrompt = (artifact: string, artifact_schema: string, context: any,
 
 console.log("\nThe Workflows:");
 flows.forEach(flow => {
-    console.log("\n\n---------------------------------- \n\n");
-    console.log(flow.name, flow.description, flow.task, flow.by);
+    console.log("\n\n---------------------------------- \nFlow: " + flow.name + "\n");
+    console.log(flow.description + "\n" + flow.task + "\n" + (flow.by ? flow.by.name : ""));
     try {
         flow.artifacts.forEach(artifact => {
-            console.log(getArtifactTypes(artifact));
+            console.log("Output of :\n\n" + getArtifactTypes(artifact));
+            console.log("\n\nPrompt:\n");
             console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), "Foo Company is a calm and peaceful mindfullness company.", flow.task, flow.by));
         });
     }

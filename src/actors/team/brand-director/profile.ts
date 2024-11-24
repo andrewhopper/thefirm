@@ -16,5 +16,4 @@ const a: UserProfileAttributes = {
     preferred_strategies: ['user_persona', 'user centered design']
 }
 
-const bd = new UserProfile("John", "Brand Director", a);
-export default bd;
+export default new UserProfile("John", "Brand Director", a);

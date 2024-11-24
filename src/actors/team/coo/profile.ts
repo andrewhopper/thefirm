@@ -5,7 +5,7 @@ import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
     role: "chief operating officer",
-    responsibilities: "manage the company's operations",
+    responsibility: "manage the company's operations",
     mbti_type: "ENTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,
