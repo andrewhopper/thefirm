@@ -5,6 +5,7 @@ import coo from "../actors/team/cmo/profile";
 import ux_researcher from "../actors/team/ux-researcher/profile";
 import techlead from "../actors/team/techlead/profile";
 import ux_designer from "../actors/team/ux-designer/profile";
+import brand_director from "../actors/team/brand-director/profile";
 import product_manager from "../actors/team/product-manager/profile";
 import cto from "../actors/team/cto/profile";
 import cmo from "../actors/team/cmo/profile";
@@ -20,61 +21,47 @@ import { Artifact } from "../artifacts/artifacts";
 class Flow {
     name: string;
     description: string;
-    from: UserProfile;
-    to: UserProfile;
+    task: string;
     artifacts: string[];
-    timeout_seconds: number;
-    constructor(name: string, description: string, artifacts: string[], from: UserProfile, to: UserProfile, timeout_seconds: number) {
+    by: UserProfile;
+    constructor(name: string, description: string, task: string, artifacts: string[], by: UserProfile) {
         this.name = name;
         this.description = description;
+        this.task = task;
         this.artifacts = artifacts;
-        this.from = from;
-        this.to = to;
-        this.timeout_seconds = timeout_seconds;
+        this.by = by;
     }
 }
 
 const flows: Flow[] = [];
 
-flows.push(new Flow(
-    "brand approval",
-    "ceo approves the brand",
-    ['Brand'],
-    ceo,
-    cmo,
-    10
-));
 
 
-flows.push(new Flow(
-    "design approval",
-    "ceo approves the design",
-    ['DesignArtifact'],
-    ceo,
-    cmo,
-    10
-));
+const f1 = {} as Flow;
+f1.name = "brand design";
+f1.description = "create a brand for the company";
+f1.task = "create a brand style guide";
+f1.artifacts = ['Brand'];
+f1.by = brand_director;
+flows.push(f1);
 
 
-flows.push(new Flow(
-    "research submission",
-    "ceo approves the research",
-    ['ResearchArtifact'],
-    ceo,
-    cmo,
-    10
-));
+const f2 = {} as Flow;
+f2.name = "brand style guide";
+f2.description = "create a brand style guide";
+f2.task = "create a brand style guide";
+f1.artifacts = ['BrandStyleGuide'];
+f1.by = brand_director;
 
+flows.push(f2);
 
-flows.push(new Flow(
-    "ux design for login page",
-    "ux designer designs the login page",
-    ['DesignMockup'],
-    ux_designer,
-    cmo,
-    10
-));
-
+const f3 = {} as Flow;
+f3.name = "brand presentation";
+f3.description = "create a presentation with the brand style guide";
+f3.task = "create a presentation for the brand";
+f3.artifacts = ['Presentation'];
+f3.by = brand_director;
+flows.push(f3);
 
 export { flows };
 

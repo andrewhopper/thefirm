@@ -1,0 +1,72 @@
+[
+  {
+    "name": "LogoType",
+    "members": [
+      {
+        "name": "LIGHT_BACKGROUND",
+        "value": "light_background"
+      },
+      {
+        "name": "DARK_BACKGROUND",
+        "value": "dark_background"
+      },
+      {
+        "name": "SQUARE",
+        "value": "square"
+      },
+      {
+        "name": "SOCIAL",
+        "value": "social"
+      },
+      {
+        "name": "RECTANGLE",
+        "value": "rectangle"
+      }
+    ]
+  },
+  {
+    "name": "ReportType",
+    "members": [
+      {
+        "name": "RESEARCH",
+        "value": "research"
+      },
+      {
+        "name": "REPORT",
+        "value": "report"
+      },
+      {
+        "name": "UX_RESEARCH",
+        "value": "ux_research"
+      },
+      {
+        "name": "UX_DESIGN",
+        "value": "ux_design"
+      },
+      {
+        "name": "UX_PROTOTYPE",
+        "value": "ux_prototype"
+      },
+      {
+        "name": "UX_TESTING",
+        "value": "ux_testing"
+      },
+      {
+        "name": "BUSINESS_PLAN",
+        "value": "business_plan"
+      },
+      {
+        "name": "MARKETING_PLAN",
+        "value": "marketing_plan"
+      },
+      {
+        "name": "FINANCIAL_PLAN",
+        "value": "financial_plan"
+      },
+      {
+        "name": "OPERATIONAL_PLAN",
+        "value": "operational_plan"
+      }
+    ]
+  }
+]

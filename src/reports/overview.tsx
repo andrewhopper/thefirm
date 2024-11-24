@@ -91,7 +91,7 @@ function printClassAttributes(className: string) {
 // Load and parse the artifacts types from JSON
 
 
-const artifactsJsonUrl = new URL('../../dist/artifacts.json', import.meta.url);
+const artifactsJsonUrl = new URL('../../dist/artifacts-latest.json', import.meta.url);
 const artifactsJson = JSON.parse(fs.readFileSync(artifactsJsonUrl, 'utf-8'));
 
 // Create a type mapping from the JSON data
@@ -103,66 +103,92 @@ artifactsJson.forEach((classInfo: any) => {
     });
 });
 
+
+const enumsJsonUrl = new URL('../../dist/enums-latest.json', import.meta.url);
+const enumsJson = JSON.parse(fs.readFileSync(enumsJsonUrl, 'utf-8'));
+
+// Create a type mapping from the JSON data
+const enums: { [key: string]: { [key: string]: string } } = {};
+enumsJson.forEach((classInfo: any) => {
+    enums[classInfo.name] = {};
+    classInfo.members.forEach((prop: any) => {
+        enums[classInfo.name][prop.name] = prop.value;
+    });
+});
+
 // Function to get type information for an artifact
 function getArtifactTypes(artifactName: string) {
     const class_schema = artifactTypes[artifactName];
-    let schema = "<schema>\n";
+    let parents = [];
+    let x = [];
     for (const [key, value] of Object.entries(class_schema)) {
         if (['string', 'number', 'boolean', 'string[]', 'Date'].includes(value)) {
-            schema += `    ${key}: ${value}\n`;
+            x.push(`${key}: ${value}`);
         }
         else {
-            console.log("----------------------------------");
-            console.log(artifactName);
-            console.log(key);
-            console.log(value);
-            console.log("----------------------------------");
+
             try {
                 const v = value.split("[]")[0];
-                schema += `    ${key}: <${getArtifactTypes(v)}>\n`;
+                parents.push(getArtifactTypes(v));
             }
             catch (e) {
-                console.warn(`No type information found for artifact: ${value}`);
+                if (enums[value]) {
+                    x.push(`${key}: ${enums[value]}`);
+                }
+                else {
+                    console.warn(`No type information found for artifact: ${value}`);
+                }
             }
         }
     }
-    schema += "</schema>";
-    return schema;
+    if (parents.length > 0) {
+        return parents.join("\n") + "\n" + "class " + artifactName + " {" + x.join(", ") + "}";
+    }
+    else {
+        return "class " + artifactName + " {" + x.join(", ") + "}";
+    }
+
     console.warn(`No type information found for artifact: ${artifactName}`);
-    return {};
 }
 
 
 const user_profile_prompt = (user_profile: UserProfile) => {
 
-    let r = "You are a " + user_profile.name + " who's title is " + user_profile.title + ". "
-    r += "\n\nYou are responsible for " + user_profile.attributes.responsibility + ". "
+    let r = "<userpersona>You are a " + user_profile.name + " who's title is " + user_profile.title + ". "
+    r += "\n\nYou are responsible for " + user_profile.attributes.role + ". "
     r += "\n\nYou are a " + user_profile.attributes.mbti_type + " and your work style is " + user_profile.attributes.work_type + ". ";
     r += "\n\nYour attention to detail is " + user_profile.attributes.attention_to_detail + " and your communication style is " + user_profile.attributes.communication_style + ". ";
     r += "\n\nYour risk tolerance is " + user_profile.attributes.risk_tolerance + " and your creativity is " + user_profile.attributes.creativity + ". ";
-    r += "\n\nYour work level of detail is " + user_profile.attributes.work_resolution + " and your preferred tools are " + user_profile.attributes.preferred_tools + ". ";
-    r += "\n\nYour preferred strategies are " + user_profile.attributes.preferred_strategies + ". ";
+    r += "\n\nYour work level of detail is " + user_profile.attributes.work_resolution;
+    r += "</userpersona>\n\n<tools>Your preferred tools are " + user_profile.attributes.preferred_tools + ". ";
+    r += "</tools>\n\n<strategies>Your preferred strategies are " + user_profile.attributes.preferred_strategies + "</strategies>";
     return r;
 
 }
 
 
-const generatePrompt = (artifact: string, artifact_schema: string, context: any, requester: UserProfile) => {
+const generatePrompt = (artifact: string, artifact_schema: string, context: any, task: string, requester: UserProfile) => {
     return user_profile_prompt(requester) +
-        "\n\nYou are generating a " + artifact + " artifact. The context is " + context + ". "
-        + "\n\nPlease create 5 versions of the artifact, each more refined than the last. " +
-        " \n\nReturn the artifact in JSON format using the following schema: " + artifact_schema + "\n";
+        "\n\n<background> The context is " + context + ". </background>" +
+        "\n\n<request>You are tasked with " + task + ".</request>" +
+        "\n\nPlease create 5 versions of the artifact, each more refined than the last.</request>" +
+        " \n\n<formatting correct responses>You are generating a " + artifact + " artifact.Return the artifact in JSON format using the following schema: " + artifact_schema + "</formatting correct responses>";
 }
 
 
 console.log("\nThe Workflows:");
 flows.forEach(flow => {
     console.log("\n\n---------------------------------- \n\n");
-    console.log(flow.name, flow.description, flow.from.name, flow.to.name, flow.timeout_seconds);
-    flow.artifacts.forEach(artifact => {
-        console.log(getArtifactTypes(artifact));
-        console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), flow.description, flow.from));
-    });
+    console.log(flow.name, flow.description, flow.task, flow.by);
+    try {
+        flow.artifacts.forEach(artifact => {
+            console.log(getArtifactTypes(artifact));
+            console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), "Foo Company is a calm and peaceful mindfullness company.", flow.task, flow.by));
+        });
+    }
+    catch (e) {
+        console.warn(`No type information found for artifact: ${e}`);
+    }
 });
 
 

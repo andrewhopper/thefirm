@@ -3,7 +3,7 @@ import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
     role: "brand director",
-    responsibilities: "create and enforce the brand",
+    responsibility: "create and enforce the brand",
     mbti_type: "ENFP",
     work_type: WorkType.STRATEGIC,
     attention_to_detail: AttentionToDetail.HIGH,
@@ -17,3 +17,4 @@ const a: UserProfileAttributes = {
 }
 
 const bd = new UserProfile("John", "Brand Director", a);
+export default bd;

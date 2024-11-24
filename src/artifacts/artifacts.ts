@@ -286,7 +286,7 @@ class Slide {
     }
 }
 
-class PresentationArtifact extends Artifact {
+class Presentation extends Artifact {
     @PropertyType()
     guid: string;
     @PropertyType()

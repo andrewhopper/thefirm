@@ -105,6 +105,7 @@ if (!fs.existsSync(distDir)) {
 
 // Write JSON file
 fs.writeFileSync(path.resolve(distDir, 'artifacts-' + new Date().toISOString() + '.json'), jsonContent);
+fs.writeFileSync(path.resolve(distDir, 'artifacts-latest.json'), jsonContent);
 
 // Start analyzing from the root node
 analyzeNode(sourceFile);
