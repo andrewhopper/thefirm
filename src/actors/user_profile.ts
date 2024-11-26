@@ -113,6 +113,51 @@ export interface UserProfileAttributes {
     artifact_types: string[]; // types of artifacts the user creates
     preferred_tools: string[]; // tools the user prefers to use
     preferred_strategies: string[]; // strategies the user prefers to use
+    key_life_experiences: string[]; // key life experiences the user has had
+    hobbies: string[]; // hobbies the user has
+    education: string[]; // education the user has
+    work_history: string[]; // work history the user has
+    birth_date: string; // birth date of the user
+    gender: string; // gender of the user
+    location: string; // location of the user
+    heritage: string; // heritage of the user
+    interests: string[]; // interests of the user
+    values: string[]; // values of the user
+    gallup_strengths: string[]; // gallup strengths of the user
+    predictive_index: string[]; // predictive index of the user
+    disc_profile: string[]; // disc profile of the user
+    family_status: string; // family status of the user
+    pets: string[]; // pets the user has
+    children: string[]; // children the user has
+    political_views: string; // political views of the user
+    religious_views: string; // religious views of the user
+    favorite_books: string[]; // favorite books of the user
+    favorite_movies: string[]; // favorite movies of the user
+    favorite_music: string[]; // favorite music of the user
+    favorite_sports: string[]; // favorite sports of the user
+    favorite_foods: string[]; // favorite foods of the user
+    favorite_colors: string[]; // favorite colors of the user
+    favorite_animals: string[]; // favorite animals of the user
+    favorite_activities: string[]; // favorite activities of the user
+    favorite_destinations: string[]; // favorite destinations of the user
+    key_accomplishments: string[]; // key accomplishments of the user
+    key_failures: string[]; // key failures of the user
+    learning_style: string; // learning style of the user
+    preferred_learning_methods: string[]; // preferred learning methods of the user 
+    preferred_feedback_style: string; // preferred feedback style of the user
+    preferred_feedback_frequency: string; // preferred feedback frequency of the user
+    preferred_communication_style: string; // preferred communication style of the user
+    preferred_meeting_style: string; // preferred meeting style of the user
+    key_influencers: string[]; // key influencers of the user
+    mother: UserProfile;
+    father: UserProfile;
+    spouse: UserProfile;
+    best_friend: UserProfile;
+    mentor: UserProfile;
+    role_model: UserProfile;
+    parent_profile_id: UserProfile;
+    emotional_state: ['emotional_stability', 'emotional_instability'];
+    emotional_variance: ['low', 'medium', 'high'];
 }
 
 const roboticNames = [
