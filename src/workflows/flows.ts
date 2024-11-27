@@ -15,24 +15,25 @@ import marketing_strategist from "../actors/team/marketing-strategist/profile";
 import frontend_eng from "../actors/team/frontend-eng/profile";
 import chief_of_staff from "../actors/team/chief-of-staff/profile";
 import ciso from "../actors/team/ciso/profile";
+import andrew_context from "../context/context";
 
 import { Artifact } from "../artifacts/artifacts";
 
 class Flow {
-    name: string;
-    description: string;
-    task: string;
-    artifacts: string[];
-    by: UserProfile;
-    context: string;
-    constructor(name: string, description: string, task: string, context: string, artifacts: string[], by: UserProfile) {
-        this.name = name;
-        this.description = description;
-        this.task = task;
-        this.artifacts = artifacts;
-        this.by = by;
-        this.context = context;
-    }
+   name: string;
+   description: string;
+   task: string;
+   artifacts: string[];
+   by: UserProfile;
+   context: string;
+   constructor(name: string, description: string, task: string, context: string, artifacts: string[], by: UserProfile) {
+      this.name = name;
+      this.description = description;
+      this.task = task;
+      this.artifacts = artifacts;
+      this.by = by;
+      this.context = context;
+   }
 }
 
 const flows: Flow[] = [];
@@ -102,34 +103,7 @@ const flows: Flow[] = [];
 
 
 const context = `
-<ENVIRONMENT PARAMS>
-Today's date is ${new Date().toLocaleDateString()}
-The time is ${new Date().toLocaleTimeString()}
-You are located in Sudbury, Massachusetts at a coffee shop where he plans to work for the morning.
-Andrew is most productive when he switches locations every 60-90 minutes.
-The CEO of the company is Andrew.
-Andrew's energy level today is 60%.
-Andrew is a conservative christian with ADHD.
-Andrew is a busy CEO with a lot of responsibilities.
-Andrew is a busy dad with three kids.
-Andrew is a busy husband with a wife.
-Andrew is a busy employee of Amazon Web Services.
-Andrew's goal priority in life is to serve God, serve his family, be a good steward of his health, and be a good leader to his team. 
-He wants to operate with integrity and kindness and make sustained contributions to others.
-</ENVIRONMENT PARAMS>
-
-<SCOPE PARAMS>
-You are a chief of staff to Andrew.
-You are responsible for helping Andrew manage his day to day responsibilities.
-You are also responsible for helping Andrew manage his team.
-You are also responsible for helping Andrew manage his personal life.
-You are also responsible for helping Andrew manage his health.
-Andrew needs to complete critical annual tasks by 12p today.
-Andrew needs to prepare for a date night with his wife tonight.
-Andrew needs to pick up sausage for dinner tonight.
-Andre's kids are getting out of school at 12p and 3pm.
-Andrew's wife has an appointment from 1-2pm today.
-</SCOPE PARAMS>
+${andrew_context}
 
 <TASK FRAMEWORK>
 1. Initial Assessment - Initiallly assess all the tasks for the day.
@@ -147,6 +121,8 @@ Andrew's wife has an appointment from 1-2pm today.
 The output should be a JSON as defined by the task framework.
 
 Also product a markdown report of the tasks and their status.
+
+After you have completed the task ask Andrew if you should do anything else.  Suggest 1-3 things that he might want to do like creating a gantt chart for the day, creating an eisenhower matrix for the day, or creating a list of tasks for the day or taking a minute to pray or check in with his body.
 </OUTPUT FORMAT>
 
 <ERROR HANDLING>
