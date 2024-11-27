@@ -158,6 +158,14 @@ export interface UserProfileAttributes {
     parent_profile_id: UserProfile;
     emotional_state: ['emotional_stability', 'emotional_instability'];
     emotional_variance: ['low', 'medium', 'high'];
+    sleep_level: ['low', 'medium', 'high'];
+    energy_level: ['low', 'medium', 'high'];
+    focus_level: ['low', 'medium', 'high'];
+    motivation_level: ['low', 'medium', 'high'];
+    creativity_level: ['low', 'medium', 'high'];
+    productivity_level: ['low', 'medium', 'high'];
+    drug_use: ['none', 'alcohol', 'drugs'];
+    learning_rate: ['low', 'medium', 'high']; // for in context learning
 }
 
 const roboticNames = [
