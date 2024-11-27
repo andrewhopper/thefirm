@@ -154,14 +154,16 @@ function getArtifactTypes(artifactName: string) {
 
 const user_profile_prompt = (user_profile: UserProfile) => {
 
-    let r = "<userpersona>You are a " + user_profile.name + " who's title is " + user_profile.title + ". "
-    r += "\n\nYou are responsible for " + user_profile.attributes.role + ". "
-    r += "\n\nYou are a " + user_profile.attributes.mbti_type + " and your work style is " + user_profile.attributes.work_type + ". ";
-    r += "\n\nYour attention to detail is " + user_profile.attributes.attention_to_detail + " and your communication style is " + user_profile.attributes.communication_style + ". ";
-    r += "\n\nYour risk tolerance is " + user_profile.attributes.risk_tolerance + " and your creativity is " + user_profile.attributes.creativity + ". ";
-    r += "\n\nYour work level of detail is " + user_profile.attributes.work_resolution;
-    r += "</userpersona>\n\n<tools>Your preferred tools are " + user_profile.attributes.preferred_tools + ". ";
-    r += "</tools>\n\n<strategies>Your preferred strategies are " + user_profile.attributes.preferred_strategies + "</strategies>";
+    let persona_string = "";
+    for (const [key, value] of Object.entries(user_profile.attributes)) {
+        if (value !== undefined) {
+            persona_string += `${key}: ${value}\n`;
+        }
+    }
+
+    let r = "<USER ROLE>You are a " + user_profile.name + " who's title is " + user_profile.title + ". "
+    r += "\n\nYou are responsible for " + user_profile.attributes.role + ".</USER ROLE> "
+    r += "\n\n<USER PERSONA>" + persona_string + "</USER PERSONA>"
     return r;
 }
 
@@ -182,7 +184,7 @@ flows.forEach(flow => {
         flow.artifacts.forEach(artifact => {
             console.log("Output of :\n\n" + getArtifactTypes(artifact));
             console.log("\n\nPrompt:\n");
-            console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), "Foo Company is a calm and peaceful mindfullness company.", flow.task, flow.by));
+            console.log(generatePrompt(artifact, JSON.stringify(getArtifactTypes(artifact)), flow.context, flow.task, flow.by));
         });
     }
     catch (e) {
