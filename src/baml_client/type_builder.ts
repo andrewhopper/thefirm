@@ -26,10 +26,10 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "ReportArtifact","ReportSection","ReportSectionContent","ResearchArtifact","Resume",
+            "ReportArtifact","ReportSection","ReportSectionContent","ResearchArtifact","Resume","Task","TaskList",
           ]),
           enums: new Set([
-            "ReportType",
+            "EisenHowerAttribute","EisenHowerMatrix","ReportType","UrgencyOptions",
           ])
         });
         

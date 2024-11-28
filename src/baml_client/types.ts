@@ -35,6 +35,20 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
+export enum EisenHowerAttribute {
+  IMPORTANT = "IMPORTANT",
+  NOT_IMPORTANT = "NOT_IMPORTANT",
+  URGENT = "URGENT",
+  NOT_URGENT = "NOT_URGENT",
+}
+
+export enum EisenHowerMatrix {
+  DO_IT_NOW = "DO_IT_NOW",
+  SCHEDULE_IT = "SCHEDULE_IT",
+  DELEGATE_IT = "DELEGATE_IT",
+  DELETE_IT = "DELETE_IT",
+}
+
 export enum ReportType {
   RESEARCH = "RESEARCH",
   REPORT = "REPORT",
@@ -47,6 +61,23 @@ export enum ReportType {
   MARKETING_PLAN = "MARKETING_PLAN",
   FINANCIAL_PLAN = "FINANCIAL_PLAN",
   OPERATIONAL_PLAN = "OPERATIONAL_PLAN",
+}
+
+export enum UrgencyOptions {
+  NOW = "NOW",
+  MORNING = "MORNING",
+  AFTERNOON = "AFTERNOON",
+  EVENING = "EVENING",
+  TODAY = "TODAY",
+  TOMORROW = "TOMORROW",
+  THIS_WEEK = "THIS_WEEK",
+  NEXT_WEEK = "NEXT_WEEK",
+  THIS_MONTH = "THIS_MONTH",
+  NEXT_MONTH = "NEXT_MONTH",
+  THIS_YEAR = "THIS_YEAR",
+  NEXT_YEAR = "NEXT_YEAR",
+  ANYTIME = "ANYTIME",
+  UNSPECIFIED = "UNSPECIFIED",
 }
 
 export interface ReportArtifact {
@@ -106,5 +137,33 @@ export interface Resume {
   email: string
   experience: string[]
   skills: string[]
+  
+}
+
+export interface Task {
+  guid: string
+  created_at: string
+  updated_at: string
+  creators: string[]
+  name: string
+  description: string
+  version: number
+  task: string
+  eh_importance: EisenHowerAttribute
+  eh_urgency: EisenHowerAttribute
+  eh_matrix: EisenHowerMatrix
+  urgency: UrgencyOptions
+  
+}
+
+export interface TaskList {
+  guid: string
+  created_at: string
+  updated_at: string
+  creators: string[]
+  name: string
+  description: string
+  version: number
+  tasks: Task[]
   
 }
