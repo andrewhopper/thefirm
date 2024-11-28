@@ -1,7 +1,22 @@
 {
     "scripts": {
-        "start": "tsx src/reports/overview.tsx",
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "start-overview": "tsx src/reports/overview.tsx",
         "test": "echo 'No tests yet @todo'",
-        "build": "tsx ./bin/compile_types.tsx && tsx ./bin/compile_enums.tsx"
+        "compile-types": "tsx ./bin/compile_types.tsx && tsx ./bin/compile_enums.tsx"
+    },
+    "dependencies": {
+        "@boundaryml/baml": "^0.69.0",
+        "dotenv": "^16.4.5",
+        "marked": "^15.0.2",
+        "next": "^15.0.3",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    },
+    "devDependencies": {
+        "@types/react": "18.3.12",
+        "tsx": "^4.19.2"
     }
 }
