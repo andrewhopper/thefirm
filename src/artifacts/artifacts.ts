@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import { UserProfile } from "../actors/user_profile";
+import { unescapeLeadingUnderscores } from 'typescript';
 
 
 function PropertyType(): PropertyDecorator {
@@ -32,6 +33,82 @@ class Artifact {
         this.name = name;
         this.description = description;
         this.version = version;
+    }
+}
+
+enum EisenHowerAttribute {
+    IMPORTANT = "important",
+    NOT_IMPORTANT = "not_important",
+    URGENT = "urgent",
+    NOT_URGENT = "not_urgent"
+}
+
+enum EisenHowerMatrix {
+    DO_IT_NOW = "do_it_now",
+    SCHEDULE_IT = "schedule_it",
+    DELEGATE_IT = "delegate_it",
+    DELETE_IT = "delete_it"
+}
+
+enum UrgencyOptions {
+    NOW = "now",
+    MORNING = "morning",
+    AFTERNOON = "afternoon",
+    EVENING = "evening",
+    TODAY = "today",
+    TOMORROW = "tomorrow",
+    THIS_WEEK = "this_week",
+    NEXT_WEEK = "next_week",
+    THIS_MONTH = "this_month",
+    NEXT_MONTH = "next_month",
+    THIS_YEAR = "this_year",
+    NEXT_YEAR = "next_year",
+    ANYTIME = "anytime",
+    UNSPECIFIED = "unspecified"
+}
+
+
+class Task extends Artifact {
+    @PropertyType()
+    task: string;
+    @PropertyType()
+    eh_importance: EisenHowerAttribute;
+    @PropertyType()
+    eh_urgency: EisenHowerAttribute;
+    @PropertyType()
+    eh_matrix: EisenHowerMatrix;
+    urgency: UrgencyOptions;
+
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, task: string, importance: EisenHowerAttribute, urgency: EisenHowerAttribute) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.task = task;
+        this.eh_importance = importance;
+        this.eh_urgency = urgency;
+        this.eh_matrix = this.getEisenhowerMatrix(importance, urgency);
+        this.urgency = UrgencyOptions.UNSPECIFIED;
+    }
+
+    getEisenhowerMatrix(importance: EisenHowerAttribute, urgency: EisenHowerAttribute): EisenHowerMatrix {
+        if (importance === EisenHowerAttribute.IMPORTANT && urgency === EisenHowerAttribute.URGENT) {
+            return EisenHowerMatrix.DO_IT_NOW;
+        }
+        if (importance === EisenHowerAttribute.IMPORTANT && urgency === EisenHowerAttribute.NOT_URGENT) {
+            return EisenHowerMatrix.SCHEDULE_IT;
+        }
+        if (importance === EisenHowerAttribute.NOT_IMPORTANT && urgency === EisenHowerAttribute.URGENT) {
+            return EisenHowerMatrix.DELEGATE_IT;
+        }
+        return EisenHowerMatrix.DELETE_IT;
+    }
+
+}
+
+class TaskList extends Artifact {
+    @PropertyType()
+    tasks: Task[];
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, tasks: Task[]) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.tasks = tasks;
     }
 }
 

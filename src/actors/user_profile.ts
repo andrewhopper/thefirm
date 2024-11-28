@@ -156,16 +156,16 @@ export interface UserProfileAttributes {
     mentor: UserProfile;
     role_model: UserProfile;
     parent_profile_id: UserProfile;
-    emotional_state: ['emotional_stability', 'emotional_instability'];
-    emotional_variance: ['low', 'medium', 'high'];
-    sleep_level: ['low', 'medium', 'high'];
-    energy_level: ['low', 'medium', 'high'];
-    focus_level: ['low', 'medium', 'high'];
-    motivation_level: ['low', 'medium', 'high'];
-    creativity_level: ['low', 'medium', 'high'];
-    productivity_level: ['low', 'medium', 'high'];
-    drug_use: ['none', 'alcohol', 'drugs'];
-    learning_rate: ['low', 'medium', 'high']; // for in context learning
+    emotional_state: string[]; //['emotional_stability', 'emotional_instability'];
+    emotional_variance: string[]; //['low', 'medium', 'high'];
+    sleep_level: string; //['low', 'medium', 'high'];
+    energy_level: string; //['low', 'medium', 'high'];
+    focus_level: string; //['low', 'medium', 'high'];
+    motivation_level: string; //['low', 'medium', 'high'];
+    creativity_level: string; //['low', 'medium', 'high'];
+    productivity_level: string; //['low', 'medium', 'high'];
+    drug_use: string; //['none', 'alcohol', 'drugs'];
+    learning_rate: string; //['low', 'medium', 'high']; // for in context learning
 }
 
 const roboticNames = [
