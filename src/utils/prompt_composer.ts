@@ -1,5 +1,5 @@
 import { UserProfile } from "../actors/user_profile";
-
+import { getArtifactSchema } from "../artifacts/artifact_metadata";
 
 // This is the personality that the AI will take on.
 const agent_profile_prompt = (user_profile: UserProfile) => {
@@ -18,12 +18,12 @@ const agent_profile_prompt = (user_profile: UserProfile) => {
 }
 
 // This is the prompt that the AI will use to generate an artifact.
-const task_prompt = (artifact: string, task: string, requester: UserProfile, json_format: boolean) => {
+const task_prompt = (artifact: string, task: string, requester: UserProfile, format: string) => {
     return "<requester_profile>" + requester.name + " is the " + requester.title + ".</requester_profile>" +
         "\n\n<request>You are tasked with " + task + ".</request>" +
         "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +
         " \n\n<formatting correct responses>You are generating a " + artifact + " artifact. " +
-        "\nReturn the artifact in " + (json_format ? "JSON" : "markdown") + " format using the following schema to help you create the artifact: " + artifact + "</formatting correct responses>";
+        "\nReturn the artifact as " + format + ". Use the following schema to help you create the artifact: " + getArtifactSchema(artifact) + "</formatting correct responses>";
 }
 
 
@@ -38,7 +38,7 @@ ${agent_profile_prompt(actor_profile)}
 </AGENT PROFILE>
 
 <TASK>
-${task_prompt(artifact, task, requester_profile, false)}
+${task_prompt(artifact, task, requester_profile, output_format)}
 </TASK>
 
 <TASK FRAMEWORK>

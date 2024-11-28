@@ -71,7 +71,7 @@ export default async function handler(
 
             // res.status(200).json({ result });
 
-            const prompt = promptComposer(task, 'MarketResearchArtifact', 'MarketResearchArtifact', andrew_context, requester_actor, producer_agent, "markdown");
+            const prompt = promptComposer(task, 'ReportArtifact', 'ReportArtifact', andrew_context, requester_actor, producer_agent, "JSON");
 
 
             if (dryrun === "true") {
@@ -98,6 +98,8 @@ export default async function handler(
                         <body>
                         <div width="75%">
                                 ${prompt.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}
+                                <h2>Prompt</h2>
+                                <pre> ${prompt}</pre>
                         </div>
                         </body>
                     </html>
@@ -132,6 +134,7 @@ export default async function handler(
                     <div width="75%">
                             <h1>Market Research Report</h1>
                             ${marked(result)}
+                            </div>
                             <h2>Prompt</h2>
                             <pre> ${prompt.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</pre>
                         </div>
