@@ -38,7 +38,7 @@ ${agent_profile_prompt(actor_profile)}
 </AGENT PROFILE>
 
 <TASK>
-${task_prompt(artifact, artifact_schema, task, requester_profile, false)}
+${task_prompt(artifact, task, requester_profile, false)}
 </TASK>
 
 <TASK FRAMEWORK>
