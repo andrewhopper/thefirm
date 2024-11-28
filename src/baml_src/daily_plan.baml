@@ -65,7 +65,7 @@ class TaskList  {
 
 
 function DailyPlan(prompt: string) -> TaskList {
-  client "openai/gpt-4o" 
+  client CustomGPT4o
   prompt #"
     {{ prompt }}
 

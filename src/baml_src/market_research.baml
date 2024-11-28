@@ -65,7 +65,8 @@ class ResearchArtifact  {
 
 
 function MarketResearch(context: string, task: string) -> string {
-  client "openai/gpt-4o" 
+  client CustomGPT4o
+ 
   prompt #"
     {{ context }} 
     {{ task }}

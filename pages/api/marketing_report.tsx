@@ -4,6 +4,9 @@ import { marked } from 'marked';
 import andrew_context from "../../src/context/context";
 import marketing_strategist from "../../src/actors/team/marketing-strategist/profile";
 import ceo from "../../src/actors/team/ceo/profile";
+import cmo from "../../src/actors/team/cmo/profile";
+import cpo from "../../src/actors/team/cpo/profile";
+import ux_researcher from "../../src/actors/team/ux-researcher/profile";
 import promptComposer from "../../src/utils/prompt_composer";
 
 function marketResearch(context: string, task: string) {
@@ -26,7 +29,7 @@ export default async function handler(
 ) {
     if (req.method === 'GET') { // Check if the request method is POST
 
-        const { topic, dryrun } = req.query;
+        const { topic, dryrun, requester, agent } = req.query;
 
         let final_topic = topic;
 
@@ -43,10 +46,28 @@ export default async function handler(
 
         if (typeof final_topic === 'string') {
 
+            let requester_actor = ceo;
+            if (requester == 'ceo') {
+                requester_actor = ceo;
+            }
+            else if (requester == 'cmo') {
+                requester_actor = cmo;
+            }
+            else if (requester == 'cpo') {
+                requester_actor = cpo;
+            }
+
+            let producer_agent = marketing_strategist;
+            if (agent == 'ux_researcher') {
+                producer_agent = ux_researcher;
+            }
+            else {
+                producer_agent = marketing_strategist;
+            }
 
             // res.status(200).json({ result });
 
-            const prompt = promptComposer(task, 'MarketResearchArtifact', 'MarketResearchArtifact', andrew_context, ceo, marketing_strategist, "markdown");
+            const prompt = promptComposer(task, 'MarketResearchArtifact', 'MarketResearchArtifact', andrew_context, requester_actor, producer_agent, "markdown");
 
 
             if (dryrun === "true") {
