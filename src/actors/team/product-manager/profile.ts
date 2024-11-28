@@ -4,7 +4,7 @@ import { UserProfile } from "../../user_profile";
 const a: UserProfileAttributes = {
     role: "product manager",
     responsibility: "manage the company's product",
-    mbti_type: "ENTJ",
+    mbti_type: "INTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,
     communication_style: CommunicationStyle.FORMAL,

@@ -6,6 +6,7 @@ import marketing_strategist from "../../src/actors/team/marketing-strategist/pro
 import ceo from "../../src/actors/team/ceo/profile";
 import cmo from "../../src/actors/team/cmo/profile";
 import cpo from "../../src/actors/team/cpo/profile";
+import product_manager from "../../src/actors/team/product-manager/profile";
 import ux_researcher from "../../src/actors/team/ux-researcher/profile";
 import promptComposer from "../../src/utils/prompt_composer";
 
@@ -60,6 +61,9 @@ export default async function handler(
             let producer_agent = marketing_strategist;
             if (agent == 'ux_researcher') {
                 producer_agent = ux_researcher;
+            }
+            else if (agent == 'product_manager') {
+                producer_agent = product_manager;
             }
             else {
                 producer_agent = marketing_strategist;

@@ -14,6 +14,13 @@ export default function Home() {
             <a href="http://localhost:3000/api/marketing_report?topic=todo+apps+for+adhd&agent=ux_researcher">Market Report - todo apps for adhd</a><br />
             <a href="http://localhost:3000/api/marketing_report?topic=calendar+apps+for+adhd&agent=ux_researcher">Market Report - calendar apps adhd</a><br />
 
+            <h2>Product Manager</h2>
+            <a href="http://localhost:3000/api/daily_plan?todos=Brush+teeth,+eat+breakfast,+go+to+work&agent=product_manager">Daily Plan</a><br />
+            <a href="http://localhost:3000/api/marketing_report?topic=personal+mental+health+apps&agent=product_manager">Market Report - mental health apps</a><br />
+            <a href="http://localhost:3000/api/marketing_report?topic=todo+apps+for+adhd&agent=product_manager">Market Report - todo apps for adhd</a><br />
+            <a href="http://localhost:3000/api/marketing_report?topic=calendar+apps+for+adhd&agent=product_manager">Market Report - calendar apps adhd</a><br />
+
+
             <h2>CMO</h2>
             <a href="http://localhost:3000/api/daily_plan?todos=Brush+teeth,+eat+breakfast,+go+to+work&requester=cmo">Daily Plan</a><br />
             <a href="http://localhost:3000/api/marketing_report?topic=personal+mental+health+apps&requester=cmo">Market Report - mental health apps</a><br />
