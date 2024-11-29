@@ -21,7 +21,7 @@ const agent_profile_prompt = (user_profile: UserProfile) => {
 const task_prompt = (artifact: string, task: string, requester: UserProfile, format: string) => {
     return "<requester_profile>" + requester.name + " is the " + requester.title + ".</requester_profile>" +
         "\n\n<request>You are tasked with " + task + ".</request>" +
-        "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +
+        // "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +
         " \n\n<formatting correct responses>You are generating a " + artifact + " artifact. " +
         "\nReturn the artifact as " + format + ". Use the following schema to help you create the artifact: " + getArtifactSchema(artifact) + "</formatting correct responses>";
 }

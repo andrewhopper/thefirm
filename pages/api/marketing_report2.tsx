@@ -23,10 +23,15 @@ function marketResearchTest() {
     console.log(result);
 }
 
+export type Data = {
+    prompt: string;
+    result_type: string;
+    result: JSON | null | string;
+}
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse,
+    res: NextApiResponse<Data>,
 ) {
     if (req.method === 'GET') { // Check if the request method is POST
 
@@ -76,77 +81,19 @@ export default async function handler(
 
             if (dryrun === "true") {
                 res.setHeader('Content-Type', 'text/html');
-                res.status(200).send(`
-                    <html>
-                        <head>
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    line-height: 1.6;
-                                    max-width: 800px;
-                                    margin: 0 auto;
-                                    padding: 20px;
-                                }
-                                .market-research {
-                                    background: white;
-                                    padding: 20px;
-                                    border-radius: 8px;
-                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                }
-                            </style>
-                        </head>
-                        <body>
-                        <div width="75%">
-                                ${prompt.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}
-                                <h2>Prompt</h2>
-                                <pre> ${prompt}</pre>
-                        </div>
-                        </body>
-                    </html>
-                `);
+                res.status(200).json({ prompt: prompt, result_type: "ReportArtifact", result: null });
                 return;
             }
             else {
                 const result = marketResearch(context, prompt);
                 console.log(result);
-
-
-                res.status(200).send(`
-                <html>
-                    <head>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                line-height: 1.6;
-                                max-width: 800px;
-                                margin: 0 auto;
-                                padding: 20px;
-                            }
-                            .market-research {
-                                background: white;
-                                padding: 20px;
-                                border-radius: 8px;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                            }
-                        </style>
-                    </head>
-                    <body>
-                    <div width="75%">
-                            <h1>Market Research Report</h1>
-                            ${marked(result)}
-                            </div>
-                            <h2>Prompt</h2>
-                            <pre> ${prompt.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</pre>
-                        </div>
-                    </body>
-                </html>
-            `);
+                res.status(200).json({ prompt: prompt, result_type: "ReportArtifact", result: result });
                 return;
             }
 
         } else {
             console.log(req.body);
-            res.status(400).json({ result: { options: ["Invalid todo parameter"] } }); // Handle invalid case
+            res.status(400).json({ prompt: "", result_type: "ReportArtifact", result: null }); // Handle invalid case
         }
     } else {
         res.setHeader('Allow', ['POST']); // Set allowed methods

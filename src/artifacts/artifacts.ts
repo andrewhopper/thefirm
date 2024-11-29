@@ -364,6 +364,24 @@ class Slide {
     }
 }
 
+class LinkedInPost extends Artifact {
+    @PropertyType()
+    post: string;
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, post: string) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.post = post;
+    }
+}
+
+class TwitterPost extends Artifact {
+    @PropertyType()
+    post: string;
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, post: string) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.post = post;
+    }
+}
+
 class Presentation extends Artifact {
     @PropertyType()
     guid: string;
