@@ -193,6 +193,36 @@ export class RedisEventOrchestrator extends EventEmitter {
             console.error('Error shutting down Redis Orchestrator:', error);
         }
     }
+    /**
+     * Deletes all events/messages from Redis
+     * @returns Number of keys deleted
+     */
+    public async deleteAllEvents(): Promise<number> {
+        try {
+            // Get all keys in Redis
+            const keys = await this.publisher.keys('*');
+
+            if (keys.length === 0) {
+                console.log('No events found in Redis');
+                return 0;
+            }
+
+            // Delete all keys
+            const deleted = await this.publisher.del(keys);
+            console.log(`Deleted all ${deleted} events from Redis`);
+
+            // Emit deletion event
+            this.emit('events:cleared', {
+                count: deleted,
+                timestamp: new Date().toISOString()
+            });
+
+            return deleted;
+        } catch (error) {
+            console.error('Error deleting all events:', error);
+            throw error;
+        }
+    }
 
     /**
      * Deletes a message or multiple messages using keys or patterns

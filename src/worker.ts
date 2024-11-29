@@ -46,6 +46,7 @@ async function initializeWorker() {
                 // Delete the processed message to prevent reprocessing
 
                 const result = await model.invoke(prompt);
+                await orchestrator.deleteAllEvents();
                 await orchestrator.publish('llm_response', {
                     originalMessage: message,
                     response: result
