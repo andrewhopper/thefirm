@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
 import { LinkedInPreviews } from '@automattic/social-previews';
 
@@ -17,8 +17,22 @@ async function fetchMarketingReport(topic: string, requester: string, dryrun = f
 }
 
 
+async function sendManagerReviewNotification(content: string) {
+    // Send a notification about the manager review request
+    console.log('Sending manager review notification via ws');
+    const result = redisWs.sendMessage('manager_reviews', {
+        action: 'new_review_requested',
+        content: content,
+        timestamp: new Date().toISOString()
+    });
+    console.log(result);
+}
+
 
 async function managerReview(content: string): Promise<MarketingReport> {
+
+
+
     const response = await fetch(`/api/manager_review?content=${encodeURIComponent(content)}`);
     const data = await response.json();
     alert(data.result);
@@ -30,6 +44,78 @@ async function fetchLinkedInPost(topic: string, requester: string, dryrun = fals
     const data = await response.json();
     return data;
 }
+
+
+class RedisWebSocket {
+    private ws: WebSocket;
+    private url: string;
+    constructor(url = 'ws://localhost:8080') {
+        this.url = url;
+        this.connect();
+    }
+
+    connect() {
+        this.ws = new WebSocket(this.url);
+
+        this.ws.onopen = () => {
+            console.log('Connected to WebSocket server');
+        };
+
+        this.ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Redis event:', data);
+            // Handle the event here
+        };
+
+        this.ws.onclose = () => {
+            console.log('Disconnected from WebSocket server');
+            // Reconnect after 5 seconds
+            setTimeout(() => this.connect(), 5000);
+        };
+    }
+
+    sendMessage(channel: string, message: any) {
+        try {
+            this.ws.send(JSON.stringify({
+                channel,
+                message
+            }));
+            return true;
+        } catch (error) {
+            console.error('WebSocket error:', error);
+            return false;
+        }
+    }
+}
+
+async function sendRedisMessage(channel: string, message: any): Promise<void> {
+    // Try to connect to WebSocket server
+    try {
+        const ws = new WebSocket('ws://localhost:8080');
+
+        console.log('Sending message to Redis');
+        console.log(channel, message);
+        // Send message once connected
+        ws.onopen = () => {
+            ws.send(JSON.stringify({
+                channel,
+                message
+            }));
+        };
+        console.log('Message sent to Redis');
+
+        // Handle any errors
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            throw new Error('Failed to send WebSocket message');
+        };
+    } catch (error) {
+        console.error('WebSocket connection failed:', error);
+        throw new Error('Failed to connect to WebSocket server');
+    }
+
+}
+
 
 function useMarketingReport() {
     const [report, setReport] = useState<MarketingReport | null>(null);
@@ -130,6 +216,10 @@ function parseResult(result: string) {
     return jsonResult;
 }
 
+
+// Usage
+const redisWs = new RedisWebSocket();
+
 export default function Home() {
     const { report: marketingReport, loading: marketingLoading, error: marketingError, getReport } = useMarketingReport();
     const { report: linkedInReport, loading: linkedInLoading, error: linkedInError, getLinkedInPost } = useLinkedInPost();
@@ -141,6 +231,66 @@ export default function Home() {
         <>
             <h1>Welcome to Next.js</h1>
             <h2>CEO</h2>
+
+            <button
+                onClick={() => redisWs.sendMessage('test_channel', {
+                    action: 'button_clicked',
+                    timestamp: new Date().toISOString()
+                })}
+                style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    marginBottom: '16px'
+                }}
+            >
+                Send Test WebSocket Message
+            </button>
+
+            <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                <h3>WebSocket Events</h3>
+                <div id="events-container">
+                    {(() => {
+                        const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string }>>([]);
+
+                        useEffect(() => {
+                            const ws = new WebSocket('ws://localhost:8080');
+
+                            ws.onmessage = (event) => {
+                                const data = JSON.parse(event.data);
+                                setEvents(prev => [...prev, {
+                                    ...data,
+                                    timestamp: new Date().toISOString()
+                                }]);
+                            };
+
+                            return () => {
+                                ws.close();
+                            };
+                        }, []);
+
+                        return (
+                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                {events.map((event, index) => (
+                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+                                        <div><strong>Key:</strong> {event.key}</div>
+                                        <div><strong>Event:</strong> {event.event}</div>
+                                        <div><strong>Time:</strong> {new Date(event.timestamp).toLocaleString()}</div>
+                                    </div>
+                                ))}
+                                {events.length === 0 && (
+                                    <div style={{ padding: '8px', color: '#666' }}>
+                                        No events received yet...
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
+                </div>
+            </div>
 
             <div>
                 <button
@@ -214,7 +364,7 @@ export default function Home() {
 
                             {linkedInReport.result && (
                                 <button
-                                    onClick={() => managerReview(parseResult(linkedInReport.result).post)}
+                                    onClick={() => sendManagerReviewNotification(parseResult(linkedInReport.result).post)}
                                     className="text-sm text-gray-500 hover:text-gray-700 mt-4"
                                 >
                                     Get Manager Review
