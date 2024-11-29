@@ -16,6 +16,15 @@ async function fetchMarketingReport(topic: string, requester: string, dryrun = f
     return data;
 }
 
+
+
+async function managerReview(content: string): Promise<MarketingReport> {
+    const response = await fetch(`/api/manager_review?content=${encodeURIComponent(content)}`);
+    const data = await response.json();
+    alert(data.result);
+    return data;
+}
+
 async function fetchLinkedInPost(topic: string, requester: string, dryrun = false): Promise<MarketingReport> {
     const response = await fetch(`/api/linkedin_post?topic=${encodeURIComponent(topic)}&requester=${requester}&dryrun=${dryrun}`);
     const data = await response.json();
@@ -26,6 +35,7 @@ function useMarketingReport() {
     const [report, setReport] = useState<MarketingReport | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [feedback, setFeedback] = useState<string | null>(null);
 
     const getReport = async (topic: string, requester: string) => {
         try {
@@ -123,6 +133,7 @@ function parseResult(result: string) {
 export default function Home() {
     const { report: marketingReport, loading: marketingLoading, error: marketingError, getReport } = useMarketingReport();
     const { report: linkedInReport, loading: linkedInLoading, error: linkedInError, getLinkedInPost } = useLinkedInPost();
+    const [feedback, setFeedback] = useState<string | null>(null);
     const [showPrompt, setShowPrompt] = useState(false);
     const [showJson, setShowJson] = useState(false);
     const [showRevisionUI, setShowRevisionUI] = useState(false);
@@ -199,6 +210,21 @@ export default function Home() {
                                         <span key={i}>{line}</span>
                                     ))}
                                 </>
+                            )}
+
+                            {linkedInReport.result && (
+                                <button
+                                    onClick={() => managerReview(parseResult(linkedInReport.result).post)}
+                                    className="text-sm text-gray-500 hover:text-gray-700 mt-4"
+                                >
+                                    Get Manager Review
+                                </button>
+                            )}
+                            {feedback && (
+                                <div>
+                                    <h4>Manager Review:</h4>
+                                    <p>{feedback}</p>
+                                </div>
                             )}
                         </div>
                     </div>
