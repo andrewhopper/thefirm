@@ -15,6 +15,26 @@ function createWebSocketServer(port: number = 8080) {
     // Connection counter to assign unique IDs to clients
     let connectionCounter = 0;
 
+    // Create a single Redis subscriber for the server
+    const subscriber = createClient();
+    subscriber.connect().catch(console.error);
+
+    // Subscribe to all Redis channels
+    subscriber.pSubscribe('*', (message: string, channel: string) => {
+        console.log(`Broadcasting message from Redis channel ${channel}:`, message);
+
+        // Broadcast to all connected WebSocket clients
+        wss.clients.forEach((client: ExtendedWebSocket) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    channel,
+                    message,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        });
+    });
+
     wss.on('listening', () => {
         console.log(`WebSocket server is listening on port ${port}`);
     });
@@ -30,35 +50,8 @@ function createWebSocketServer(port: number = 8080) {
         // Log when client connects
         console.log(`[${clientId}] Connected at ${new Date().toISOString()}`);
 
-        // Subscribe to Redis for messages
-        const subscriber = createClient();
-        subscriber.connect().catch(console.error);
-
-        subscriber.subscribe('*', (message: string, channel: string) => {
-            console.log('broadcasting message', message, 'to channel', channel);
-            try {
-                // Send message to all connected clients
-                wss.clients.forEach((client: ExtendedWebSocket) => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({
-                            channel,
-                            message,
-                            timestamp: new Date().toISOString()
-                        }));
-                    }
-                });
-            } catch (error) {
-                console.error(`[${clientId}] Error broadcasting Redis message:`, error);
-            }
-        });
-
-        // Clean up subscriber on client disconnect
-        ws.on('close', () => {
-            subscriber.quit().catch(console.error);
-        });
-
         // Handle incoming messages
-        ws.on('message', (data: Buffer | ArrayBuffer | Buffer[]) => {
+        ws.on('message', async (data: Buffer | ArrayBuffer | Buffer[]) => {
             try {
                 const message = data.toString();
                 console.log(`[${clientId}] Message received:`, {
@@ -66,27 +59,16 @@ function createWebSocketServer(port: number = 8080) {
                     data: message
                 });
 
-                // Create Redis client
-                const redisClient = createClient();
-                redisClient.connect().catch(console.error);
+                // Create Redis publisher client
+                const publisher = createClient();
+                await publisher.connect();
 
-                // Save message to Redis with timestamp
-                const timestamp = new Date().toISOString();
-                const key = `message:${timestamp}`;
-                redisClient.set(key, message).catch((err: Error) => {
-                    console.error(`[${clientId}] Error saving to Redis:`, err);
-                });
+                // Publish message to Redis
+                await publisher.publish('chat', message);
 
-                // Disconnect Redis client
-                redisClient.quit().catch(console.error);
+                // Clean up publisher
+                await publisher.quit();
 
-                // Try to parse as JSON if possible
-                try {
-                    const jsonData = JSON.parse(message);
-                    // console.log(`[${clientId}] Parsed JSON data:`, jsonData);
-                } catch {
-                    // Not JSON data, that's fine
-                }
             } catch (error) {
                 console.error(`[${clientId}] Error processing message:`, error);
             }
@@ -115,6 +97,11 @@ function createWebSocketServer(port: number = 8080) {
         ws.on('pong', () => {
             console.log(`[${clientId}] Received pong`);
         });
+    });
+
+    // Clean up Redis subscriber when server closes
+    wss.on('close', () => {
+        subscriber.quit().catch(console.error);
     });
 
     return wss;
