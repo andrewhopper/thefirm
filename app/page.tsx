@@ -17,12 +17,18 @@ async function fetchMarketingReport(topic: string, requester: string, dryrun = f
 }
 
 
-async function sendManagerReviewNotification(content: string) {
+async function sendManagerReviewNotification(from: string, to: string, artifact_type: string, artifact_guid: string, artifact: string, context: string, task: string) {
     // Send a notification about the manager review request
     console.log('Sending manager review notification via ws');
-    const result = redisWs.sendMessage('manager_reviews', {
+    const result = redisWs.sendMessage('chat', {
         action: 'new_review_requested',
-        content: content,
+        from: from,
+        to: to,
+        artifact_type: artifact_type,
+        artifact_guid: artifact_guid,
+        artifact: artifact,
+        context: context,
+        task: task,
         timestamp: new Date().toISOString()
     });
     console.log(result);
@@ -279,6 +285,7 @@ export default function Home() {
                                         <div><strong>Key:</strong> {event.key}</div>
                                         <div><strong>Event:</strong> {event.event}</div>
                                         <div><strong>Time:</strong> {new Date(event.timestamp).toLocaleString()}</div>
+                                        <div><strong>Message:</strong> {JSON.stringify(event)}</div>
                                     </div>
                                 ))}
                                 {events.length === 0 && (
@@ -362,9 +369,10 @@ export default function Home() {
                                 </>
                             )}
 
+
                             {linkedInReport.result && (
                                 <button
-                                    onClick={() => sendManagerReviewNotification(parseResult(linkedInReport.result).post)}
+                                    onClick={() => sendManagerReviewNotification('ceo', 'marketing_manager', 'LinkedInPost', parseResult(linkedInReport.result).guid, parseResult(linkedInReport.result).post, 'Trying to grow thought leadership', 'review linkedin post')}
                                     className="text-sm text-gray-500 hover:text-gray-700 mt-4"
                                 >
                                     Get Manager Review

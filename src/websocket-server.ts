@@ -74,6 +74,18 @@ function createWebSocketServer(port: number = 8080) {
             }
         });
 
+        // Subscribe to all Redis channels
+        subscriber.pSubscribe('*', (message: string, channel: string) => {
+            console.log(`Broadcasting message from Redis channel ${channel}:`, message);
+
+            // Broadcast to all connected WebSocket clients
+            ws.send(JSON.stringify({
+                channel,
+                message,
+                timestamp: new Date().toISOString()
+            }));
+        });
+
         // Handle client errors
         ws.on('error', (error) => {
             console.error(`[${clientId}] WebSocket error:`, error);

@@ -93,6 +93,31 @@ export class BamlSyncClient {
     }
   }
   
+  GenericCall(
+      context: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): string {
+    try {
+    const raw = this.runtime.callFunctionSync(
+      "GenericCall",
+      {
+        "context": context
+      },
+      this.ctx_manager.cloneContext(),
+      __baml_options__?.tb?.__tb(),
+      __baml_options__?.clientRegistry,
+    )
+    return raw.parsed() as string
+    } catch (error: any) {
+      const bamlError = createBamlValidationError(error);
+      if (bamlError instanceof BamlValidationError) {
+        throw bamlError;
+      } else {
+        throw error;
+      }
+    }
+  }
+  
   MarketResearch(
       context: string,task: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }

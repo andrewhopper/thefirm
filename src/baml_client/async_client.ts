@@ -93,6 +93,31 @@ export class BamlAsyncClient {
     }
   }
   
+  async GenericCall(
+      context: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): Promise<string> {
+    try {
+      const raw = await this.runtime.callFunction(
+        "GenericCall",
+        {
+          "context": context
+        },
+        this.ctx_manager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      )
+      return raw.parsed() as string
+    } catch (error: any) {
+      const bamlError = createBamlValidationError(error);
+      if (bamlError instanceof BamlValidationError) {
+        throw bamlError;
+      } else {
+        throw error;
+      }
+    }
+  }
+  
   async MarketResearch(
       context: string,task: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
@@ -176,6 +201,39 @@ class BamlStreamClient {
         raw,
         (a): a is RecursivePartialNull<Resume> => a,
         (a): a is Resume => a,
+        this.ctx_manager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+      )
+    } catch (error) {
+      if (error instanceof Error) {
+        const bamlError = createBamlValidationError(error);
+        if (bamlError instanceof BamlValidationError) {
+          throw bamlError;
+        }
+      }
+      throw error;
+    }
+  }
+  
+  GenericCall(
+      context: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry }
+  ): BamlStream<RecursivePartialNull<string>, string> {
+    try {
+      const raw = this.runtime.streamFunction(
+        "GenericCall",
+        {
+          "context": context
+        },
+        undefined,
+        this.ctx_manager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+      )
+      return new BamlStream<RecursivePartialNull<string>, string>(
+        raw,
+        (a): a is RecursivePartialNull<string> => a,
+        (a): a is string => a,
         this.ctx_manager.cloneContext(),
         __baml_options__?.tb?.__tb(),
       )
