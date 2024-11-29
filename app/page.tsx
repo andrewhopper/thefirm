@@ -1,6 +1,8 @@
 'use client';
+import React from 'react';
 import { useState } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
+import { LinkedInPreviews } from '@automattic/social-previews';
 
 interface MarketingReport {
     result: string;
@@ -169,28 +171,32 @@ export default function Home() {
                                     >
                                         {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
                                     </button>
-                                    {showPrompt && (https://static-production.npmjs.com/255a118f56f5346b97e56325a1217a16.svg
-                                    <pre className="mt-2">{linkedInReport.prompt}</pre>
+                                    {showPrompt && (
+                                        <pre className="mt-2">{linkedInReport.prompt}</pre>
                                     )}
                                 </div>
                             )}
                         </div>
                     </div>
                     <div>
-                        <h4>Type: {linkedInReport.result_type}</h4>
-                    </div>
-                    <div>
-                        <h4>Post Content:</h4>
+                        <h4>Post Preview:</h4>
+                        <div style={{ maxWidth: '600px', margin: '20px 0' }}>
+                            <LinkedInPreviews
+                                url="example.com"
+                                title="LinkedIn Post"
+                                description={parseResult(linkedInReport.result).post}
+                                name="AI Generated Post"
+                                profileImage="https://placehold.co/200x200"
+                            />
+                        </div>
                         <div>
-
+                            <h4>Raw Content:</h4>
                             {linkedInReport.result && (
                                 <>
                                     <pre className="mt-2">{JSON.stringify(parseResult(linkedInReport.result), null, 2)}</pre>
                                     {parseResult(linkedInReport.result).post.split('\n').map((line: any, i: number) => (
-                                        <>
-                                            <span key={i}>{line}</span>
-                                            <br />
-                                        </>
+
+                                        <span key={i}>{line}</span>
                                     ))}
                                 </>
                             )}
