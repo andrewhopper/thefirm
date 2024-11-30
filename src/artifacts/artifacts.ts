@@ -45,11 +45,17 @@ class Feedback extends Artifact {
     feedback_target_guid: string;
     @PropertyType()
     feedback: string;
-    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, feedback_provider: string, feedback_target_guid: string, feedback: string) {
+    @PropertyType()
+    original_artifact_json: string;
+    @PropertyType()
+    revised_artifact_json: string;
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, feedback_provider: string, feedback_target_guid: string, feedback: string, original_artifact_json: string, revised_artifact_json: string) {
         super(guid, created_at, updated_at, creators, name, description, version);
         this.feedback_provider = feedback_provider;
         this.feedback_target_guid = feedback_target_guid;
         this.feedback = feedback;
+        this.original_artifact_json = original_artifact_json;
+        this.revised_artifact_json = revised_artifact_json;
     }
 }
 

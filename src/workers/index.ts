@@ -45,7 +45,7 @@ async function initializeWorker() {
 
                     try {
                         const artifact = message.message.artifact;
-                        const prompt = PromptComposer("reviewing a LinkedIn post", "Grow thought leadership.  Revise this post to be more engaging and thought provoking.<POST>" + message.message.artifact + "</POST>", "Feedback", getArtifactSchema("Feedback"), social_media_expert, marketing_manager, "json")
+                        const prompt = PromptComposer("reviewing a LinkedIn post", "Grow thought leadership.  Provided specific points of feedback in the Feedback object and revise this post to be more engaging and thought provoking.  Include a revised version of the post that incorporates your feedback LinkedInPost format.  Here's the original post:<POST>" + message.message.artifact + "</POST>", "Feedback", getArtifactSchema("Feedback"), social_media_expert, marketing_manager, "json")
                         console.log(prompt);
                         console.log("Calling OpenAI..."
                         );

@@ -471,6 +471,10 @@ export default function Home() {
                                         {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback.split('\n').map((line: string, i: number) => (
                                             <div key={i}>{line}</div>
                                         ))}
+                                        <br />
+                                        Here's a revision of the artifact incorporating the feedback:
+                                        <br />
+                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).revised_artifact_json}
                                     </div>
                                 );
                             }
