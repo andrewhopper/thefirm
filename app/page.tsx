@@ -3,6 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
 import { LinkedInPreviews } from '@automattic/social-previews';
+import { Button } from '../components/ui/button';
 
 interface MarketingReport {
     result: string;
@@ -234,11 +235,11 @@ export default function Home() {
     const [showJson, setShowJson] = useState(false);
     const [showRevisionUI, setShowRevisionUI] = useState(false);
     return (
-        <>
-            <h1>Welcome to Next.js</h1>
-            <h2>CEO</h2>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold">Welcome to Next.js</h1>
+            <h2 className="text-lg font-bold">CEO</h2>
 
-            <button
+            <Button
                 onClick={() => redisWs.sendMessage('test_channel', {
                     action: 'button_clicked',
                     timestamp: new Date().toISOString()
@@ -254,7 +255,7 @@ export default function Home() {
                 }}
             >
                 Send Test WebSocket Message
-            </button>
+            </Button>
 
             <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
                 <h3>WebSocket Events</h3>
@@ -482,6 +483,6 @@ export default function Home() {
                     })()}
                 </div>
             )}
-        </>
+        </div>
     );
 } 
