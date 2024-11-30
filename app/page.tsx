@@ -235,276 +235,309 @@ export default function Home() {
     const [showJson, setShowJson] = useState(false);
     const [showRevisionUI, setShowRevisionUI] = useState(false);
     const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string, message?: any }>>([]);
+    const [showRawContent, setShowRawContent] = useState(false);
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold">Welcome to Next.js</h1>
-            <h2 className="text-lg font-bold">CEO</h2>
+        <div className="w-full grid grid-cols-3 gap-4">
+            <div className="col-span-1 p-4 border rounded shadow">
+                <h2 className="text-xl font-bold mb-4">Column 1</h2>
+                <div className="space-y-4">
 
-            <Button
-                className="mb-4"
-                onClick={() => redisWs.sendMessage('test_channel', {
-                    action: 'button_clicked',
-                    timestamp: new Date().toISOString()
-                })}
+                    <div className="p-4">
+                        <h1 className="text-2xl font-bold">Welcome to Next.js</h1>
+                        <h2 className="text-lg font-bold">CEO</h2>
 
-            >
-                Send Test WebSocket Message
-            </Button>
+                        <Button
+                            className="mb-4"
+                            onClick={() => redisWs.sendMessage('test_channel', {
+                                action: 'button_clicked',
+                                timestamp: new Date().toISOString()
+                            })}
+
+                        >
+                            Send Test WebSocket Message
+                        </Button>
 
 
-            <div>
-                <Button className="mb-4"
-                    onClick={() => getReport('personal mental health apps', 'ceo')}
-                    disabled={marketingLoading}
-                >
-                    Get Marketing Report for CEO on Personal Mental Health Apps
-                </Button>
-                <br />
-                <Button
-                    className="mb-4"
-                    onClick={() => getReport('personal mental health apps', 'coo')}
-                    disabled={marketingLoading}
-                >
-                    Get Marketing Report for COO on Todo list Apps popular with people with ADHD
-                </Button>
-                <br />
-                <Button
-                    className="mb-4"
-                    onClick={() => getLinkedInPost('how education can be improved with AI', 'social_media_marketer')}
-                    disabled={linkedInLoading}
-                >
-                    Create a LinkedIn Post about the latest AI trends
-                </Button>
-                {marketingLoading && <p>Loading...</p>}
-                {marketingError && <p>Error: {marketingError}</p>}
-                {linkedInLoading && <p>Loading...</p>}
-                {linkedInError && <p>Error: {linkedInError}</p>}
-            </div>
-            {linkedInReport && (
-                <div>
-                    <h3>LinkedIn Post</h3>
-                    <div>
-                        <h4>Prompt:</h4>
                         <div>
-                            {linkedInReport.prompt && (
-                                <div>
-                                    <button
-                                        onClick={() => setShowPrompt(!showPrompt)}
-                                        className="text-sm text-gray-500 hover:text-gray-700"
-                                    >
-                                        {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
-                                    </button>
-                                    {showPrompt && (
-                                        <pre className="mt-2">{linkedInReport.prompt}</pre>
-                                    )}
-                                </div>
-                            )}
+                            <Button className="mb-4"
+                                onClick={() => getReport('personal mental health apps', 'ceo')}
+                                disabled={marketingLoading}
+                            >
+                                Get Marketing Report for CEO on Personal Mental Health Apps
+                            </Button>
+                            <br />
+                            <Button
+                                className="mb-4"
+                                onClick={() => getReport('personal mental health apps', 'coo')}
+                                disabled={marketingLoading}
+                            >
+                                Get Marketing Report for COO on Todo <br /> list Apps popular with people with ADHD
+                            </Button>
+                            <br />
+                            <Button
+                                className="mb-4"
+                                onClick={() => getLinkedInPost('how education can be improved with AI', 'social_media_marketer')}
+                                disabled={linkedInLoading}
+                            >
+                                Create a LinkedIn Post about the latest AI trends
+                            </Button>
+                            {marketingLoading && <p>Loading...</p>}
+                            {marketingError && <p>Error: {marketingError}</p>}
+                            {linkedInLoading && <p>Loading...</p>}
+                            {linkedInError && <p>Error: {linkedInError}</p>}
                         </div>
-                    </div>
-                    <div>
-                        <h4>Post Preview:</h4>
-                        <div style={{ maxWidth: '600px', margin: '20px 0' }}>
-                            <LinkedInPreviews
-                                url="example.com"
-                                title="LinkedIn Post"
-                                description={parseResult(linkedInReport.result).post}
-                                name="AI Generated Post"
-                                profileImage="https://placehold.co/200x200"
-                            />
-                        </div>
-                        <div>
-                            <h4>Raw Content:</h4>
-                            {linkedInReport.result && (
-                                <>
-                                    <pre className="mt-2">{JSON.stringify(parseResult(linkedInReport.result), null, 2)}</pre>
-                                    {parseResult(linkedInReport.result).post.split('\n').map((line: any, i: number) => (
-
-                                        <span key={i}>{line}</span>
-                                    ))}
-                                </>
-                            )}
 
 
-                            {linkedInReport.result && (
-                                <button
-                                    onClick={() => sendManagerReviewNotification('ceo', 'marketing_manager', 'LinkedInPost', parseResult(linkedInReport.result).guid, parseResult(linkedInReport.result).post, 'Trying to grow thought leadership', 'review linkedin post')}
-                                    className="text-sm text-gray-500 hover:text-gray-700 mt-4"
-                                >
-                                    Get Manager Review
-                                </button>
-                            )}
 
+                        {marketingReport && (
+                            <div>
+                                {(() => {
+                                    try {
+                                        // this is json with string ```json as the beginning and ``` at the end
+                                        // strip the ```json and ``` at the beginning and end
+                                        // then parse the result
+                                        // also remove the \n at the beginning and end
 
-                        </div>
-                    </div>
-                </div>
-            )}
-            <h1>Events</h1>
-            {events && events.length > 0 && (
-                events.map((event, index) => {
-                    if (JSON.parse(event.message).message_type === "Feedback") {
-                        return (
-                            <div key={index} style={{ border: '1px solid #ccc', padding: '8px', margin: '8px 0' }}>
-                                {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback}
-                            </div>
-                        );
-                    }
-                })
-            )}
+                                        // here's an example of the result string"json\n{\n  \"guid\": \"12345-abcde-67890-fghij\"
+                                        // update the code below to parse the result into json
 
-            {marketingReport && (
-                <div>
-                    {(() => {
-                        try {
-                            // this is json with string ```json as the beginning and ``` at the end
-                            // strip the ```json and ``` at the beginning and end
-                            // then parse the result
-                            // also remove the \n at the beginning and end
-
-                            // here's an example of the result string"json\n{\n  \"guid\": \"12345-abcde-67890-fghij\"
-                            // update the code below to parse the result into json
-
-                            const parsedResult = marketingReport.result.replace(/```json|```/g, '').replace(/^\n|\n$/g, '');
-                            const jsonResult = JSON.parse(parsedResult);
-                            return (
-                                <>
-                                    <h3>Report Results</h3>
-                                    <div>
-                                        <h4>Prompt:</h4>
-                                        <div>
-                                            {marketingReport.prompt && (
+                                        const parsedResult = marketingReport.result.replace(/```json|```/g, '').replace(/^\n|\n$/g, '');
+                                        const jsonResult = JSON.parse(parsedResult);
+                                        return (
+                                            <>
+                                                <h3>Report Results</h3>
                                                 <div>
-                                                    <button
-                                                        onClick={() => setShowPrompt(!showPrompt)}
-                                                        className="text-sm text-gray-500 hover:text-gray-700"
-                                                    >
-                                                        {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
-                                                    </button>
-                                                    {showPrompt && (
-                                                        <pre className="mt-2">{marketingReport.prompt}</pre>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4>Type: {marketingReport.result_type}</h4>
-                                    </div>
-                                    <div>
-                                        <h4>Results:</h4>
-                                        <div>
-                                            <button
-                                                onClick={() => setShowJson(!showJson)}
-                                                className="text-sm text-gray-500 hover:text-gray-700"
-                                            >
-                                                {showJson ? 'Hide Raw JSON' : 'Show Raw JSON'}
-                                            </button>
-                                            {showJson && (
-                                                <pre className="mt-2">
-                                                    {JSON.stringify(jsonResult, null, 2)}
-                                                </pre>
-                                            )}
-                                        </div>
-                                        {jsonResult && marketingReport.result_type === 'ReportArtifact' && jsonResult["sections"] && (
-                                            <div className="mt-4">
-                                                <h2>{jsonResult && jsonResult.title}</h2>
-                                                <h4>Report Sections:</h4>
-                                                {jsonResult.sections.map((section: any, index: number) => (
-                                                    <div key={index} className="mt-2">
-                                                        <h5 className="font-bold">{section.section_title}</h5>
-                                                        <p>{section.section_content.content}</p>
-                                                        {!showRevisionUI && (
-                                                            <button
-                                                                onClick={() => {
-                                                                    handleReviseSection(section.guid);
-                                                                    setShowRevisionUI(true);
-                                                                }}
-                                                                className="mt-2 text-sm text-blue-500 hover:text-blue-700"
-                                                            >
-                                                                Revise Section
-                                                            </button>
-                                                        )}
-                                                        {showRevisionUI && (
-                                                            revisionUI(section.guid)
+                                                    <h4>Prompt:</h4>
+                                                    <div>
+                                                        {marketingReport.prompt && (
+                                                            <div>
+                                                                <Button
+                                                                    onClick={() => setShowPrompt(!showPrompt)}
+                                                                    variant="ghost"
+                                                                >
+                                                                    {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
+                                                                </Button>
+                                                                {showPrompt && (
+                                                                    <pre className="mt-2">{marketingReport.prompt}</pre>
+                                                                )}
+                                                            </div>
                                                         )}
                                                     </div>
-                                                ))}
+                                                </div>
+                                                <div>
+                                                    <h4>Type: {marketingReport.result_type}</h4>
+                                                </div>
+                                                <div>
+                                                    <h4>Results:</h4>
+                                                    <div>
+                                                        <Button
+                                                            onClick={() => setShowJson(!showJson)}
+                                                            variant="outline"
+                                                        >
+                                                            {showJson ? 'Hide Raw JSON' : 'Show Raw JSON'}
+                                                        </Button>
+                                                        {showJson && (
+                                                            <pre className="mt-2">
+                                                                {JSON.stringify(jsonResult, null, 2)}
+                                                            </pre>
+                                                        )}
+                                                    </div>
+                                                    {jsonResult && marketingReport.result_type === 'ReportArtifact' && jsonResult["sections"] && (
+                                                        <div className="mt-4">
+                                                            <h2>{jsonResult && jsonResult.title}</h2>
+                                                            <h4>Report Sections:</h4>
+                                                            {jsonResult.sections.map((section: any, index: number) => (
+                                                                <div key={index} className="mt-2">
+                                                                    <h5 className="font-bold">{section.section_title}</h5>
+                                                                    <p>{section.section_content.content}</p>
+                                                                    {!showRevisionUI && (
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                handleReviseSection(section.guid);
+                                                                                setShowRevisionUI(true);
+                                                                            }}
+                                                                            className="mt-2 text-sm text-blue-500 hover:text-blue-700"
+                                                                        >
+                                                                            Revise Section
+                                                                        </button>
+                                                                    )}
+                                                                    {showRevisionUI && (
+                                                                        revisionUI(section.guid)
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </>
+                                        );
+                                    } catch (error) {
+                                        return (
+                                            <div>
+                                                Error parsing report: {error instanceof Error ? error.message : 'Unknown error'}
+                                            </div>
+                                        );
+                                    }
+                                })()}
+                            </div>
+                        )}
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div className="col-span-1 p-4 border rounded shadow">
+                <h2 className="text-xl font-bold mb-4">Column 2</h2>
+                <div className="space-y-4">
+                    {linkedInReport && (
+                        <div>
+                            <h3>LinkedIn Post</h3>
+                            <div>
+                                <h4>Prompt:</h4>
+                                <div>
+                                    {linkedInReport.prompt && (
+                                        <div>
+                                            <button
+                                                onClick={() => setShowPrompt(!showPrompt)}
+                                                className="text-sm text-gray-500 hover:text-gray-700"
+                                            >
+                                                {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
+                                            </button>
+                                            {showPrompt && (
+                                                <pre className="mt-2">{linkedInReport.prompt}</pre>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <h4>Post Preview:</h4>
+                                <div style={{ maxWidth: '600px', margin: '20px 0' }}>
+                                    <LinkedInPreviews
+                                        url="example.com"
+                                        title="LinkedIn Post"
+                                        description={parseResult(linkedInReport.result).post}
+                                        name="AI Generated Post"
+                                        profileImage="https://placehold.co/200x200"
+                                    />
+                                </div>
+                                <div>
+                                    <h4>Raw Content:</h4>
+                                    <button
+                                        onClick={() => setShowRawContent(!showRawContent)}
+                                        className="text-sm text-gray-500 hover:text-gray-700"
+                                    >
+                                        {showRawContent ? 'Hide Raw Content' : 'Show Raw Content'}
+                                    </button>
+                                    {linkedInReport.result && showRawContent && (
+                                        <>
+                                            <pre className="mt-2">{JSON.stringify(parseResult(linkedInReport.result), null, 2)}</pre>
+                                            {parseResult(linkedInReport.result).post.split('\n').map((line: any, i: number) => (
+                                                <span key={i}>{line}</span>
+                                            ))}
+                                        </>
+                                    )}
+
+
+                                    {linkedInReport.result && (
+                                        <Button
+                                            onClick={() => sendManagerReviewNotification('ceo', 'marketing_manager', 'LinkedInPost', parseResult(linkedInReport.result).guid, parseResult(linkedInReport.result).post, 'Trying to grow thought leadership', 'review linkedin post')}
+
+                                        >
+                                            Get Manager Review
+                                        </Button>
+                                    )}
+
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="col-span-1 p-4 border rounded shadow">
+                <h2 className="text-xl font-bold mb-4">Column 3</h2>
+                <div className="space-y-4">
+                    <h1>Events</h1>
+                    {events && events.length > 0 && (
+                        events.map((event, index) => {
+                            if (JSON.parse(event.message).message_type === "Feedback") {
+                                return (
+                                    <div key={index} style={{ border: '1px solid #ccc', padding: '8px', margin: '8px 0' }}>
+                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback.split('\n').map((line: string, i: number) => (
+                                            <div key={i}>{line}</div>
+                                        ))}
+                                    </div>
+                                );
+                            }
+                        })
+                    )}
+                    <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                        <h3>WebSocket Events</h3>
+                        <div id="events-container" style={{ height: '1000px', overflowY: 'auto' }}>
+                            {(() => {
+
+                                useEffect(() => {
+                                    const ws = new WebSocket('ws://localhost:8080');
+
+                                    ws.onmessage = (event) => {
+                                        const data = JSON.parse(event.data);
+
+                                        setEvents(prev => [...prev, {
+                                            ...data,
+                                            timestamp: new Date().toISOString()
+                                        }]);
+
+
+                                    };
+
+                                    return () => {
+                                        ws.close();
+                                    };
+                                }, []);
+
+                                useEffect(() => {
+                                    events.map((event) => {
+                                        if (event.message && event.message.message_type === "Feedback") {
+                                            alert(JSON.parse(event.message).content);
+                                            setFeedback(JSON.parse(event.message).content);
+                                        }
+                                    });
+                                }, [events]);
+
+                                return (
+                                    <div style={{ maxHeight: '1000px', overflowY: 'auto' }}>
+                                        {events.map((event, index) => (
+                                            <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+                                                <pre style={{ margin: 0, fontSize: '0.75rem' }}>
+
+                                                    {JSON.stringify({
+                                                        key: event.key,
+                                                        event: event.event,
+                                                        time: new Date(event.timestamp).toLocaleString(),
+                                                        message: JSON.parse(event.message)
+                                                    }, null, 2)}
+                                                </pre>
+                                            </div>
+                                        ))}
+                                        {events.length === 0 && (
+                                            <div style={{ padding: '8px', color: '#666' }}>
+                                                No events received yet...
                                             </div>
                                         )}
                                     </div>
-                                </>
-                            );
-                        } catch (error) {
-                            return (
-                                <div>
-                                    Error parsing report: {error instanceof Error ? error.message : 'Unknown error'}
-                                </div>
-                            );
-                        }
-                    })()}
-                </div>
-            )}
-
-
-            <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <h3>WebSocket Events</h3>
-                <div id="events-container">
-                    {(() => {
-
-                        useEffect(() => {
-                            const ws = new WebSocket('ws://localhost:8080');
-
-                            ws.onmessage = (event) => {
-                                const data = JSON.parse(event.data);
-
-                                setEvents(prev => [...prev, {
-                                    ...data,
-                                    timestamp: new Date().toISOString()
-                                }]);
-
-
-                            };
-
-                            return () => {
-                                ws.close();
-                            };
-                        }, []);
-
-                        useEffect(() => {
-                            events.map((event) => {
-                                if (event.message && event.message.message_type === "Feedback") {
-                                    alert(JSON.parse(event.message).content);
-                                    setFeedback(JSON.parse(event.message).content);
-                                }
-                            });
-                        }, [events]);
-
-                        return (
-                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                {events.map((event, index) => (
-                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-                                        <pre style={{ margin: 0 }}>
-
-                                            {JSON.stringify({
-                                                key: event.key,
-                                                event: event.event,
-                                                time: new Date(event.timestamp).toLocaleString(),
-                                                message: JSON.parse(event.message)
-                                            }, null, 2)}
-                                        </pre>
-                                    </div>
-                                ))}
-                                {events.length === 0 && (
-                                    <div style={{ padding: '8px', color: '#666' }}>
-                                        No events received yet...
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })()}
+                                );
+                            })()}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
     );
 } 
