@@ -10,6 +10,7 @@ function PropertyType(): PropertyDecorator {
     };
 }
 
+
 class Artifact {
     @PropertyType()
     guid: string;
@@ -33,6 +34,22 @@ class Artifact {
         this.name = name;
         this.description = description;
         this.version = version;
+    }
+}
+
+
+class Feedback extends Artifact {
+    @PropertyType()
+    feedback_provider: string;
+    @PropertyType()
+    feedback_target_guid: string;
+    @PropertyType()
+    feedback: string;
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, feedback_provider: string, feedback_target_guid: string, feedback: string) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.feedback_provider = feedback_provider;
+        this.feedback_target_guid = feedback_target_guid;
+        this.feedback = feedback;
     }
 }
 

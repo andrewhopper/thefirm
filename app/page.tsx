@@ -234,93 +234,48 @@ export default function Home() {
     const [showPrompt, setShowPrompt] = useState(false);
     const [showJson, setShowJson] = useState(false);
     const [showRevisionUI, setShowRevisionUI] = useState(false);
+    const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string, message?: any }>>([]);
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold">Welcome to Next.js</h1>
             <h2 className="text-lg font-bold">CEO</h2>
 
             <Button
+                className="mb-4"
                 onClick={() => redisWs.sendMessage('test_channel', {
                     action: 'button_clicked',
                     timestamp: new Date().toISOString()
                 })}
-                style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#4CAF50',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginBottom: '16px'
-                }}
+
             >
                 Send Test WebSocket Message
             </Button>
 
-            <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                <h3>WebSocket Events</h3>
-                <div id="events-container">
-                    {(() => {
-                        const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string }>>([]);
-
-                        useEffect(() => {
-                            const ws = new WebSocket('ws://localhost:8080');
-
-                            ws.onmessage = (event) => {
-                                const data = JSON.parse(event.data);
-                                setEvents(prev => [...prev, {
-                                    ...data,
-                                    timestamp: new Date().toISOString()
-                                }]);
-                            };
-
-                            return () => {
-                                ws.close();
-                            };
-                        }, []);
-
-                        return (
-                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                {events.map((event, index) => (
-                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-                                        <div><strong>Key:</strong> {event.key}</div>
-                                        <div><strong>Event:</strong> {event.event}</div>
-                                        <div><strong>Time:</strong> {new Date(event.timestamp).toLocaleString()}</div>
-                                        <div><strong>Message:</strong> {JSON.stringify(event)}</div>
-                                    </div>
-                                ))}
-                                {events.length === 0 && (
-                                    <div style={{ padding: '8px', color: '#666' }}>
-                                        No events received yet...
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })()}
-                </div>
-            </div>
 
             <div>
-                <button
+                <Button className="mb-4"
                     onClick={() => getReport('personal mental health apps', 'ceo')}
                     disabled={marketingLoading}
                 >
                     Get Marketing Report for CEO on Personal Mental Health Apps
-                </button>
+                </Button>
                 <br />
-                <button
+                <Button
+                    className="mb-4"
                     onClick={() => getReport('personal mental health apps', 'coo')}
                     disabled={marketingLoading}
                 >
                     Get Marketing Report for COO on Todo list Apps popular with people with ADHD
-                </button>
+                </Button>
                 <br />
-                <button
+                <Button
+                    className="mb-4"
                     onClick={() => getLinkedInPost('how education can be improved with AI', 'social_media_marketer')}
                     disabled={linkedInLoading}
                 >
                     Create a LinkedIn Post about the latest AI trends
-                </button>
+                </Button>
                 {marketingLoading && <p>Loading...</p>}
                 {marketingError && <p>Error: {marketingError}</p>}
                 {linkedInLoading && <p>Loading...</p>}
@@ -379,17 +334,24 @@ export default function Home() {
                                     Get Manager Review
                                 </button>
                             )}
-                            {feedback && (
-                                <div>
-                                    <h4>Manager Review:</h4>
-                                    <p>{feedback}</p>
-                                </div>
-                            )}
+
+
                         </div>
                     </div>
                 </div>
             )}
-
+            <h1>Events</h1>
+            {events && events.length > 0 && (
+                events.map((event, index) => {
+                    if (JSON.parse(event.message).message_type === "Feedback") {
+                        return (
+                            <div key={index} style={{ border: '1px solid #ccc', padding: '8px', margin: '8px 0' }}>
+                                {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback}
+                            </div>
+                        );
+                    }
+                })
+            )}
 
             {marketingReport && (
                 <div>
@@ -483,6 +445,66 @@ export default function Home() {
                     })()}
                 </div>
             )}
+
+
+            <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                <h3>WebSocket Events</h3>
+                <div id="events-container">
+                    {(() => {
+
+                        useEffect(() => {
+                            const ws = new WebSocket('ws://localhost:8080');
+
+                            ws.onmessage = (event) => {
+                                const data = JSON.parse(event.data);
+
+                                setEvents(prev => [...prev, {
+                                    ...data,
+                                    timestamp: new Date().toISOString()
+                                }]);
+
+
+                            };
+
+                            return () => {
+                                ws.close();
+                            };
+                        }, []);
+
+                        useEffect(() => {
+                            events.map((event) => {
+                                if (event.message && event.message.message_type === "Feedback") {
+                                    alert(JSON.parse(event.message).content);
+                                    setFeedback(JSON.parse(event.message).content);
+                                }
+                            });
+                        }, [events]);
+
+                        return (
+                            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                {events.map((event, index) => (
+                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+                                        <pre style={{ margin: 0 }}>
+
+                                            {JSON.stringify({
+                                                key: event.key,
+                                                event: event.event,
+                                                time: new Date(event.timestamp).toLocaleString(),
+                                                message: JSON.parse(event.message)
+                                            }, null, 2)}
+                                        </pre>
+                                    </div>
+                                ))}
+                                {events.length === 0 && (
+                                    <div style={{ padding: '8px', color: '#666' }}>
+                                        No events received yet...
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
+                </div>
+            </div>
         </div>
     );
 } 

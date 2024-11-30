@@ -40,37 +40,36 @@ async function initializeWorker() {
             console.log("Message:", message);
             console.log("--------------------------------");
 
-            if (Object.keys(message.message).includes("artifact_type")) {
+            if (Object.keys(message).includes("message")) {
+                if (Object.keys(message.message).includes("artifact_type")) {
 
-                try {
-                    const artifact = message.message.artifact;
-                    const prompt = PromptComposer("reviewing a LinkedIn post", "Grow thought leadership.  Revise this post to be more engaging and thought provoking.<POST>" + message.message.artifact + "</POST>", "LinkedInPost", getArtifactSchema("LinkedInPost"), social_media_expert, marketing_manager, "json")
-                    console.log(prompt);
-                    console.log("Calling OpenAI..."
-                    );
-                    // remove message from redis to prevent infinite loop
-                    // Delete the processed message to prevent reprocessing
+                    try {
+                        const artifact = message.message.artifact;
+                        const prompt = PromptComposer("reviewing a LinkedIn post", "Grow thought leadership.  Revise this post to be more engaging and thought provoking.<POST>" + message.message.artifact + "</POST>", "Feedback", getArtifactSchema("Feedback"), social_media_expert, marketing_manager, "json")
+                        console.log(prompt);
+                        console.log("Calling OpenAI..."
+                        );
+                        // remove message from redis to prevent infinite loop
+                        // Delete the processed message to prevent reprocessing
 
-                    const result = await model.invoke(prompt);
+                        const result = await model.invoke(prompt);
 
-                    // const result = "mocked LLM response";
+                        // const result = "mocked LLM response";
 
-                    await orchestrator.deleteAllEvents();
-                    await orchestrator.publish('llm_response', {
-                        // originalMessage: message,
-                        message: {
-                            message_type: "MemoArtifact",
+                        await orchestrator.deleteAllEvents();
+                        await orchestrator.publish('llm_response', {
+                            // originalMessage: message,
+                            message_type: "Feedback",
                             content: result
-                        }
-                    });
-                    console.log(result);
-                }
-                catch (error) {
-                    console.log(message)
-                    console.error('Error in worker:', error);
+                        });
+                        console.log(result);
+                    }
+                    catch (error) {
+                        console.log(message)
+                        console.error('Error in worker:', error);
+                    }
                 }
             }
-
         });
     } catch (error) {
         console.error('Error in worker:', error);
