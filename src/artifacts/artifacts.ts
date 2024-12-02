@@ -90,6 +90,22 @@ enum UrgencyOptions {
     UNSPECIFIED = "unspecified"
 }
 
+class NeededItems extends Artifact {
+    @PropertyType()
+    items: string[];
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, items: string[]) {
+        super(guid, created_at, updated_at, creators, name, description, version);
+        this.items = items;
+    }
+}
+
+enum TaskStatus {
+    NOT_STARTED = "not_started",
+    IN_PROGRESS = "in_progress",
+    COMPLETED = "completed",
+    CANCELLED = "cancelled",
+    DEFERRED = "deferred"
+}
 
 class Task extends Artifact {
     @PropertyType()
@@ -101,14 +117,19 @@ class Task extends Artifact {
     @PropertyType()
     eh_matrix: EisenHowerMatrix;
     urgency: UrgencyOptions;
+    @PropertyType()
+    items_needed: NeededItems;
+    @PropertyType()
+    status: TaskStatus;
 
-    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, task: string, importance: EisenHowerAttribute, urgency: EisenHowerAttribute) {
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, task: string, importance: EisenHowerAttribute, urgency: EisenHowerAttribute, items_needed: NeededItems) {
         super(guid, created_at, updated_at, creators, name, description, version);
         this.task = task;
         this.eh_importance = importance;
         this.eh_urgency = urgency;
         this.eh_matrix = this.getEisenhowerMatrix(importance, urgency);
         this.urgency = UrgencyOptions.UNSPECIFIED;
+        this.items_needed = items_needed;
     }
 
     getEisenhowerMatrix(importance: EisenHowerAttribute, urgency: EisenHowerAttribute): EisenHowerMatrix {
