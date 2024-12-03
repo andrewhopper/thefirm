@@ -121,8 +121,14 @@ function resolveSchema(artifactName: string): string {
 }
 
 function getArtifactSchema(artifactName: string): string {
+    console.log("getting artifact schema for: ", artifactName);
+    if (artifactName === undefined) {
+        throw new Error("Artifact name is undefined", { cause: "received: " + artifactName });
+    }
     return resolveSchema(artifactName);
 }
 
+const artifacts = loadClasses();
 
-export { getArtifactSchema };
+
+export { getArtifactSchema, artifacts };

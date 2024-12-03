@@ -2,18 +2,19 @@ import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution
 import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
-    role: "product manager",
-    responsibility: "manage the company's product",
+    role: "business analyst",
+    responsibility: "analyze the business",
     mbti_type: "ENTJ",
     work_type: WorkType.TACTICAL,
-    attention_to_detail: AttentionToDetail.HIGH,
+    attention_to_detail: AttentionToDetail.MEDIUM,
     communication_style: CommunicationStyle.FORMAL,
     risk_tolerance: RiskTolerance.MEDIUM,
-    creativity: Creativity.HIGH,
+    creativity: Creativity.MEDIUM,
     work_resolution: WorkResolution.Tactical,
-    artifact_types: ['product_roadmap', 'product_specification', 'product_development_plan', 'product_release_plan', 'product_launch_plan', 'product_marketing_plan', 'product_sales_plan'],
-    preferred_tools: ['notion', 'google_docs', 'excel'],
-    preferred_strategies: ['product_management', 'agile_product_management', 'lean_product_management'],
+    artifact_types: ['analyst_note', 'projection', 'excel_report'],
+    preferred_tools: ['excel', 'powerpoint', 'notion'],
+    preferred_strategies: ['proforma', 'financial_modeling', 'gaap', 'CFA', 'CFP'],
+    // @TODO - fix these
     key_life_experiences: ['start_up', 'growth_stage', 'exit'],
     hobbies: ['reading', 'traveling', 'golf'],
     education: ['mba', 'university'],
@@ -69,6 +70,7 @@ const a: UserProfileAttributes = {
     learning_rate: "high"
 }
 
-const product_manager = new UserProfile("John", "Product Manager", a);
+const ba = new UserProfile("John", "Business Analyst", a);
 
-export default product_manager;
+export default ba;
+
