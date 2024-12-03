@@ -2,18 +2,19 @@ import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution
 import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
-    role: "product manager",
-    responsibility: "manage the company's product",
-    mbti_type: "ENTJ",
+    role: "backend engineer",
+    responsibility: "build the backend",
+    mbti_type: "INTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,
     communication_style: CommunicationStyle.FORMAL,
     risk_tolerance: RiskTolerance.MEDIUM,
     creativity: Creativity.HIGH,
     work_resolution: WorkResolution.Tactical,
-    artifact_types: ['product_roadmap', 'product_specification', 'product_development_plan', 'product_release_plan', 'product_launch_plan', 'product_marketing_plan', 'product_sales_plan'],
-    preferred_tools: ['notion', 'google_docs', 'excel'],
-    preferred_strategies: ['product_management', 'agile_product_management', 'lean_product_management'],
+    artifact_types: [ArtifactType.CODE],
+    preferred_tools: ['nextjs', 'tailwind', 'supabase', 'postgres', 'nodejs', 'typescript'],
+    preferred_strategies: ['test_driven_development'],
+    // @TODO - fix these
     key_life_experiences: ['start_up', 'growth_stage', 'exit'],
     hobbies: ['reading', 'traveling', 'golf'],
     education: ['mba', 'university'],
@@ -69,6 +70,6 @@ const a: UserProfileAttributes = {
     learning_rate: "high"
 }
 
-const product_manager = new UserProfile("John", "Product Manager", a);
+const be = new UserProfile("James", "Backend Engineer", a);
 
-export default product_manager;
+export default be;

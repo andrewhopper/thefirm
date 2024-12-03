@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
 import { LinkedInPreviews } from '@automattic/social-previews';
 import { Button } from '../components/ui/button';
+import { roles } from '../src/actors/team/team';
+import { UserProfile } from '../src/user_profile';
+import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
 
 interface MarketingReport {
     result: string;
@@ -15,6 +18,15 @@ async function fetchMarketingReport(topic: string, requester: string, dryrun = f
     const response = await fetch(`/api/marketing_report?topic=${encodeURIComponent(topic)}&requester=${requester}&dryrun=${dryrun}`);
     const data = await response.json();
     return data;
+}
+
+
+function renderBrand(brand: string) {
+    return <div>{brand}</div>;
+}
+
+function renderBrandStyleGuide(brandStyleGuide: string) {
+    return <div>{brandStyleGuide}</div>;
 }
 
 
@@ -227,7 +239,24 @@ function parseResult(result: string) {
 // Usage
 const redisWs = new RedisWebSocket();
 
+// Add this before the Home component
+function handleSubmitRequest(to: string, from: string, requestArtifact: string, responseArtifact: string, details: string) {
+    redisWs.sendMessage(to, {
+        direction: "inbound",
+        from: from,
+        to: to,
+        requestArtifact: requestArtifact,
+        responseArtifact: responseArtifact,
+        details: details,
+        timestamp: new Date().toISOString()
+    });
+
+    console.log('Request submitted with:', { from, to, requestArtifact, responseArtifact, details });
+}
+
 export default function Home() {
+
+
     const { report: marketingReport, loading: marketingLoading, error: marketingError, getReport } = useMarketingReport();
     const { report: linkedInReport, loading: linkedInLoading, error: linkedInError, getLinkedInPost } = useLinkedInPost();
     const [feedback, setFeedback] = useState<string | null>(null);
@@ -236,6 +265,11 @@ export default function Home() {
     const [showRevisionUI, setShowRevisionUI] = useState(false);
     const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string, message?: any }>>([]);
     const [showRawContent, setShowRawContent] = useState(false);
+    const [from, setFrom] = useState('ceo');
+    const [to, setTo] = useState('brand_director');
+    const [requestArtifact, setRequestArtifact] = useState('MemoArtifact');
+    const [responseArtifact, setResponseArtifact] = useState('Brand');
+    const [details, setDetails] = useState('please create a brand manifesto for our new mindfulness brand');
 
     return (
         <div className="w-full grid grid-cols-3 gap-4">
@@ -259,8 +293,64 @@ export default function Home() {
                         </Button>
 
 
+
+
                         <div>
-                            <Button className="mb-4"
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmitRequest(
+                                    from,
+                                    to,
+                                    requestArtifact,
+                                    responseArtifact,
+                                    details
+                                );
+                            }}>
+                                From:
+                                <select className="w-full p-2 mb-4 border rounded" name="from" value={from} onChange={(e) => setFrom(e.target.value)}>
+                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
+                                        <option key={index} value={key}>
+                                            {role.name} - {role.attributes.role}
+                                        </option>
+                                    ))}
+                                </select>
+                                To:
+                                <select className="w-full p-2 mb-4 border rounded" name="to" value={to} onChange={(e) => setTo(e.target.value)}>
+                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
+                                        <option key={index} value={key}>
+                                            {role.name} - {role.attributes.role}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                Request Artifact(s):
+                                <select className="w-full p-2 mb-4 border rounded" value={requestArtifact} onChange={(e) => setRequestArtifact(e.target.value)}>
+                                    {Object.entries(artifacts).map(([key, artifact]: [string, any], index: number) => (
+                                        <option key={index} value={key}>
+                                            {key}: {artifact.name} {JSON.stringify(artifact)}
+                                        </option>
+                                    ))}
+                                </select>
+                                Response Artifact(s):
+                                <select className="w-full p-2 mb-4 border rounded" value={responseArtifact} onChange={(e) => setResponseArtifact(e.target.value)}>
+                                    {Object.entries(artifacts).map(([key, artifact]: [string, any], index: number) => (
+                                        <option key={index} value={key}>
+                                            {key}: {artifact.name} {JSON.stringify(artifact)}
+                                        </option>
+                                    ))}
+                                </select>
+                                <textarea
+                                    className="w-full p-2 mb-4 border rounded"
+                                    placeholder="Type details of your request here"
+                                    rows={4}
+                                    value={details}
+                                    onChange={(e) => setDetails(e.target.value)}
+                                />
+                                <Button type="submit" className="w-full mb-4">
+                                    Send Request
+                                </Button>
+                            </form>
+                            {/* <Button className="mb-4"
                                 onClick={() => getReport('personal mental health apps', 'ceo')}
                                 disabled={marketingLoading}
                             >
@@ -281,7 +371,7 @@ export default function Home() {
                                 disabled={linkedInLoading}
                             >
                                 Create a LinkedIn Post about the latest AI trends
-                            </Button>
+                            </Button> */}
                             {marketingLoading && <p>Loading...</p>}
                             {marketingError && <p>Error: {marketingError}</p>}
                             {linkedInLoading && <p>Loading...</p>}
@@ -465,16 +555,21 @@ export default function Home() {
                     <h1>Events</h1>
                     {events && events.length > 0 && (
                         events.map((event, index) => {
-                            if (JSON.parse(event.message).message_type === "Feedback") {
+                            if (event.message && event.message.content) {
                                 return (
-                                    <div key={index} style={{ border: '1px solid #ccc', padding: '8px', margin: '8px 0' }}>
-                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback.split('\n').map((line: string, i: number) => (
-                                            <div key={i}>{line}</div>
-                                        ))}
-                                        <br />
-                                        Here's a revision of the artifact incorporating the feedback:
-                                        <br />
-                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).revised_artifact_json}
+
+                                    <div>
+                                        <div>{JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '').replace(/```/g, ''))}</div>
+
+                                        <div>{JSON.parse(event.message).content}</div>
+                                    </div>
+
+                                );
+                            }
+                            else {
+                                return (
+                                    <div>
+                                        <div>{JSON.stringify(event)}</div>
                                     </div>
                                 );
                             }
