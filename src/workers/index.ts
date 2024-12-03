@@ -21,7 +21,7 @@ console.log(OPENAI_API_KEY);
 
 
 const model = new OpenAI({
-    modelName: "gpt-4-turbo-preview",
+    modelName: "gpt-4o-mini",
     temperature: 0.7,
     maxTokens: 2000,
 });

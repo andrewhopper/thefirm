@@ -15,11 +15,16 @@ function parseMessage(message: object) {
         // Parse the JSON string into an object
         const messageObj = JSON.parse(stripIt(messageStr));
 
-        const artifact = JSON.parse(stripIt(messageObj.content))
+        try {
+            const artifact = JSON.parse(stripIt(messageObj.content))
+            return artifact
+        } catch (e) {
+            return JSON.stringify(message)
+        }
 
-        return artifact
+
     }
-    return {}
+    return JSON.stringify(message)
 }
 
 let result = parseMessage(example);
