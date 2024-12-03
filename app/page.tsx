@@ -6,6 +6,7 @@ import { LinkedInPreviews } from '@automattic/social-previews';
 import { Button } from '../components/ui/button';
 import { roles } from '../src/actors/team/team';
 import { UserProfile } from '../src/user_profile';
+import ReactMarkdown from 'react-markdown';
 import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
 import parseMessage from './parser';
 
@@ -501,9 +502,13 @@ export default function Home() {
                                                         const jsonContent = parseMessage(event);
                                                         let markdown = '';
 
+                                                        let colors: any;
                                                         // Convert JSON object to markdown
                                                         for (const [key, value] of Object.entries(jsonContent)) {
-                                                            markdown += `### ${key}\n${value}\n\n`;
+                                                            markdown += `## ${key}\n${value}\n\n`;
+                                                            if (key === 'color_palette') {
+                                                                colors = value;
+                                                            }
                                                         }
 
                                                         // Use a markdown parser library if available
@@ -513,7 +518,30 @@ export default function Home() {
                                                                 style={{ whiteSpace: 'pre-wrap' }}
                                                                 className="markdown-content"
                                                             >
-                                                                {markdown}
+                                                                {colors && (
+                                                                    <div>
+                                                                        <h4>Color Palette</h4>
+                                                                        <div>{colors.map((color: any) => (
+                                                                            <div key={color} style={{
+                                                                                width: '50px',
+                                                                                height: '50px',
+                                                                                backgroundColor: color.trim(),
+                                                                                display: 'inline-block',
+                                                                                margin: '5px',
+                                                                                border: '1px solid #ddd'
+                                                                            }}></div>
+                                                                        ))}</div>
+                                                                    </div>
+                                                                )}
+                                                                <ReactMarkdown
+                                                                    components={{
+                                                                        h1: ({ node, ...props }) => <h1 className="text-4xl font-bold mb-4" {...props} />,
+                                                                        h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3" {...props} />,
+                                                                        h3: ({ node, ...props }) => <h3 className="text-xl font-medium mb-2" {...props} />
+                                                                    }}
+                                                                >
+                                                                    {markdown}
+                                                                </ReactMarkdown>
                                                             </div>
                                                         );
                                                     })()}
