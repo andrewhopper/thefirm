@@ -4,9 +4,18 @@ This repository contains the code for thefirm, a tool for building and managing 
 
 ## How to run the code
 
+Prerequisites:
+- Node.js
+- npm
+- Redis
+
 1. Clone the repository
-2. Run `npm build` to complete the classes and enums
-3. Run `npm start` to generate the prompts defined in the flows
+2. Run `npm install` to install the dependencies
+3. Run `npm build` to complete the classes and enums
+4. Run `brew services start redis` to start the redis server
+5. Start the websocket server with `npm run start-ws`
+6. Start the background workers with `npm run start-workers`
+7. Run `npm run dev` to start the Next.js server
 
 ## Overview
 

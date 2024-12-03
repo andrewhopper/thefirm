@@ -1,0 +1,179 @@
+[
+  {
+    "name": "EisenHowerAttribute",
+    "members": [
+      {
+        "name": "IMPORTANT",
+        "value": "important"
+      },
+      {
+        "name": "NOT_IMPORTANT",
+        "value": "not_important"
+      },
+      {
+        "name": "URGENT",
+        "value": "urgent"
+      },
+      {
+        "name": "NOT_URGENT",
+        "value": "not_urgent"
+      }
+    ]
+  },
+  {
+    "name": "EisenHowerMatrix",
+    "members": [
+      {
+        "name": "DO_IT_NOW",
+        "value": "do_it_now"
+      },
+      {
+        "name": "SCHEDULE_IT",
+        "value": "schedule_it"
+      },
+      {
+        "name": "DELEGATE_IT",
+        "value": "delegate_it"
+      },
+      {
+        "name": "DELETE_IT",
+        "value": "delete_it"
+      }
+    ]
+  },
+  {
+    "name": "UrgencyOptions",
+    "members": [
+      {
+        "name": "NOW",
+        "value": "now"
+      },
+      {
+        "name": "MORNING",
+        "value": "morning"
+      },
+      {
+        "name": "AFTERNOON",
+        "value": "afternoon"
+      },
+      {
+        "name": "EVENING",
+        "value": "evening"
+      },
+      {
+        "name": "TODAY",
+        "value": "today"
+      },
+      {
+        "name": "TOMORROW",
+        "value": "tomorrow"
+      },
+      {
+        "name": "THIS_WEEK",
+        "value": "this_week"
+      },
+      {
+        "name": "NEXT_WEEK",
+        "value": "next_week"
+      },
+      {
+        "name": "THIS_MONTH",
+        "value": "this_month"
+      },
+      {
+        "name": "NEXT_MONTH",
+        "value": "next_month"
+      },
+      {
+        "name": "THIS_YEAR",
+        "value": "this_year"
+      },
+      {
+        "name": "NEXT_YEAR",
+        "value": "next_year"
+      },
+      {
+        "name": "ANYTIME",
+        "value": "anytime"
+      },
+      {
+        "name": "UNSPECIFIED",
+        "value": "unspecified"
+      }
+    ]
+  },
+  {
+    "name": "LogoType",
+    "members": [
+      {
+        "name": "LIGHT_BACKGROUND",
+        "value": "light_background"
+      },
+      {
+        "name": "DARK_BACKGROUND",
+        "value": "dark_background"
+      },
+      {
+        "name": "SQUARE",
+        "value": "square"
+      },
+      {
+        "name": "SOCIAL",
+        "value": "social"
+      },
+      {
+        "name": "RECTANGLE",
+        "value": "rectangle"
+      }
+    ]
+  },
+  {
+    "name": "ReportType",
+    "members": [
+      {
+        "name": "RESEARCH",
+        "value": "research"
+      },
+      {
+        "name": "REPORT",
+        "value": "report"
+      },
+      {
+        "name": "MARKET_RESEARCH",
+        "value": "market_research"
+      },
+      {
+        "name": "UX_RESEARCH",
+        "value": "ux_research"
+      },
+      {
+        "name": "UX_DESIGN",
+        "value": "ux_design"
+      },
+      {
+        "name": "UX_PROTOTYPE",
+        "value": "ux_prototype"
+      },
+      {
+        "name": "UX_TESTING",
+        "value": "ux_testing"
+      },
+      {
+        "name": "BUSINESS_PLAN",
+        "value": "business_plan"
+      },
+      {
+        "name": "MARKETING_PLAN",
+        "value": "marketing_plan"
+      },
+      {
+        "name": "FINANCIAL_PLAN",
+        "value": "financial_plan"
+      },
+      {
+        "name": "OPERATIONAL_PLAN",
+        "value": "operational_plan"
+      }
+    ]
+  }
+]

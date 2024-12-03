@@ -51,15 +51,15 @@ Andrew's wife has an appointment from 1-2pm today.
 </IMMEDIATE CONSTRAINTS>
 `
 
-const roleContext = `
-<ROLE PARAMS>
-You are a chief of staff to Andrew, who is the CEO of the company.
-You are responsible for helping Andrew manage his day to day responsibilities.
-You are also responsible for helping Andrew manage his team.
-You are also responsible for helping Andrew manage his personal life.
-You are also responsible for helping Andrew manage his health.
-</ROLE PARAMS>`
+// const roleContext = `
+// <ROLE PARAMS>
+// You are a chief of staff to Andrew, who is the CEO of the company.
+// You are responsible for helping Andrew manage his day to day responsibilities.
+// You are also responsible for helping Andrew manage his team.
+// You are also responsible for helping Andrew manage his personal life.
+// You are also responsible for helping Andrew manage his health.
+// </ROLE PARAMS>`
 
-export const context = `${baseContext}\n${userProfile}\n${userValues}\n${physicalState}\n${mentalState}\n${contextConstraints}\n${roleContext}`
+export const context = `${baseContext}\n${userProfile}\n${userValues}\n${physicalState}\n${mentalState}\n${contextConstraints}`
 
 export default context;

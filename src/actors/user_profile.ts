@@ -149,13 +149,13 @@ export interface UserProfileAttributes {
     preferred_communication_style: string; // preferred communication style of the user
     preferred_meeting_style: string; // preferred meeting style of the user
     key_influencers: string[]; // key influencers of the user
-    mother: UserProfile;
-    father: UserProfile;
-    spouse: UserProfile;
-    best_friend: UserProfile;
-    mentor: UserProfile;
-    role_model: UserProfile;
-    parent_profile_id: UserProfile;
+    mother: UserProfile | null;
+    father: UserProfile | null;
+    spouse: UserProfile | null;
+    best_friend: UserProfile | null;
+    mentor: UserProfile | null;
+    role_model: UserProfile | null;
+    parent_profile_id: UserProfile | null;
     emotional_state: string[]; //['emotional_stability', 'emotional_instability'];
     emotional_variance: string[]; //['low', 'medium', 'high'];
     sleep_level: string; //['low', 'medium', 'high'];

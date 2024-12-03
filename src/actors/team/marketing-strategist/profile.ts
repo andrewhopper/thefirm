@@ -2,7 +2,7 @@ import { WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution
 import { UserProfile } from "../../user_profile";
 
 const a: UserProfileAttributes = {
-    role: "marketing strategist",
+    role: "marketing strategy",
     responsibility: "develop and implement the company's marketing strategy",
     mbti_type: "ENTJ",
     work_type: WorkType.TACTICAL,

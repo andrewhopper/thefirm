@@ -33,31 +33,6 @@
     ]
   },
   {
-    "name": "Feedback",
-    "properties": [
-      {
-        "name": "feedback_provider",
-        "type": "string"
-      },
-      {
-        "name": "feedback_target_guid",
-        "type": "string"
-      },
-      {
-        "name": "feedback",
-        "type": "string"
-      },
-      {
-        "name": "original_artifact_json",
-        "type": "string"
-      },
-      {
-        "name": "revised_artifact_json",
-        "type": "string"
-      }
-    ]
-  },
-  {
     "name": "Task",
     "properties": [
       {

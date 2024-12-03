@@ -4,7 +4,7 @@ import { UserProfile } from "../../user_profile";
 const a: UserProfileAttributes = {
     role: "ux researcher",
     responsibility: "research the company's user experience",
-    mbti_type: "ENTJ",
+    mbti_type: "INTJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,
     communication_style: CommunicationStyle.FORMAL,

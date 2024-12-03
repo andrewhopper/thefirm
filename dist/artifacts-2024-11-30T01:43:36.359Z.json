@@ -46,14 +46,6 @@
       {
         "name": "feedback",
         "type": "string"
-      },
-      {
-        "name": "original_artifact_json",
-        "type": "string"
-      },
-      {
-        "name": "revised_artifact_json",
-        "type": "string"
       }
     ]
   },
