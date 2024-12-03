@@ -57,7 +57,7 @@ export class RedisEventOrchestrator extends EventEmitter {
 
             // Emit event for external listeners
             this.emit('message', { channel, message: parsedMessage });
-
+            this.handleLLMResponseEvents(message, channel);
             // Route message to appropriate handler based on channel
             switch (true) {
                 case channel.startsWith('user:'):

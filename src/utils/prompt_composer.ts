@@ -3,6 +3,10 @@ import { getArtifactSchema } from "../artifacts/artifact_metadata";
 
 // This is the personality that the AI will take on.
 const agent_profile_prompt = (user_profile: UserProfile) => {
+    if (user_profile === undefined) {
+        throw new Error("User profile is undefined");
+        return "";
+    }
 
     let persona_string = "";
     for (const [key, value] of Object.entries(user_profile.attributes)) {
@@ -19,6 +23,10 @@ const agent_profile_prompt = (user_profile: UserProfile) => {
 
 // This is the prompt that the AI will use to generate an artifact.
 const task_prompt = (artifact: string, task: string, requester: UserProfile, format: string) => {
+    console.log("task_prompt", artifact, task, requester, format);
+    if (artifact === undefined || task === undefined || requester === undefined || format === undefined) {
+        throw new Error("task_prompt: required arguments are undefined", { cause: { artifact, task, requester, format } });
+    }
     return "<requester_profile>" + requester.name + " is the " + requester.title + ".</requester_profile>" +
         "\n\n<request>You are tasked with " + task + ".</request>" +
         // "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +

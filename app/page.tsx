@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
 import { LinkedInPreviews } from '@automattic/social-previews';
 import { Button } from '../components/ui/button';
+import { roles } from '../src/actors/team/team';
+import { UserProfile } from '../src/user_profile';
+import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
+import parseMessage from './parser';
 
 interface MarketingReport {
     result: string;
@@ -15,6 +19,15 @@ async function fetchMarketingReport(topic: string, requester: string, dryrun = f
     const response = await fetch(`/api/marketing_report?topic=${encodeURIComponent(topic)}&requester=${requester}&dryrun=${dryrun}`);
     const data = await response.json();
     return data;
+}
+
+
+function renderBrand(brand: string) {
+    return <div>{brand}</div>;
+}
+
+function renderBrandStyleGuide(brandStyleGuide: string) {
+    return <div>{brandStyleGuide}</div>;
 }
 
 
@@ -227,7 +240,24 @@ function parseResult(result: string) {
 // Usage
 const redisWs = new RedisWebSocket();
 
+// Add this before the Home component
+function handleSubmitRequest(to: string, from: string, requestArtifact: string, responseArtifact: string, details: string) {
+    redisWs.sendMessage(to, {
+        direction: "inbound",
+        from: from,
+        to: to,
+        requestArtifact: requestArtifact,
+        responseArtifact: responseArtifact,
+        details: details,
+        timestamp: new Date().toISOString()
+    });
+
+    console.log('Request submitted with:', { from, to, requestArtifact, responseArtifact, details });
+}
+
 export default function Home() {
+
+
     const { report: marketingReport, loading: marketingLoading, error: marketingError, getReport } = useMarketingReport();
     const { report: linkedInReport, loading: linkedInLoading, error: linkedInError, getLinkedInPost } = useLinkedInPost();
     const [feedback, setFeedback] = useState<string | null>(null);
@@ -236,6 +266,11 @@ export default function Home() {
     const [showRevisionUI, setShowRevisionUI] = useState(false);
     const [events, setEvents] = useState<Array<{ key: string, event: string, timestamp: string, message?: any }>>([]);
     const [showRawContent, setShowRawContent] = useState(false);
+    const [from, setFrom] = useState('ceo');
+    const [to, setTo] = useState('brand_director');
+    const [requestArtifact, setRequestArtifact] = useState('MemoArtifact');
+    const [responseArtifact, setResponseArtifact] = useState('Brand');
+    const [details, setDetails] = useState('please create a brand manifesto for our new mindfulness brand');
 
     return (
         <div className="w-full grid grid-cols-3 gap-4">
@@ -259,8 +294,64 @@ export default function Home() {
                         </Button>
 
 
+
+
                         <div>
-                            <Button className="mb-4"
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmitRequest(
+                                    from,
+                                    to,
+                                    requestArtifact,
+                                    responseArtifact,
+                                    details
+                                );
+                            }}>
+                                From:
+                                <select className="w-full p-2 mb-4 border rounded" name="from" value={from} onChange={(e) => setFrom(e.target.value)}>
+                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
+                                        <option key={index} value={key}>
+                                            {role.name} - {role.attributes.role}
+                                        </option>
+                                    ))}
+                                </select>
+                                To:
+                                <select className="w-full p-2 mb-4 border rounded" name="to" value={to} onChange={(e) => setTo(e.target.value)}>
+                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
+                                        <option key={index} value={key}>
+                                            {role.name} - {role.attributes.role}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                Request Artifact(s):
+                                <select className="w-full p-2 mb-4 border rounded" value={requestArtifact} onChange={(e) => setRequestArtifact(e.target.value)}>
+                                    {Object.entries(artifacts).map(([key, artifact]: [string, any], index: number) => (
+                                        <option key={index} value={key}>
+                                            {key}: {artifact.name} {JSON.stringify(artifact)}
+                                        </option>
+                                    ))}
+                                </select>
+                                Response Artifact(s):
+                                <select className="w-full p-2 mb-4 border rounded" value={responseArtifact} onChange={(e) => setResponseArtifact(e.target.value)}>
+                                    {Object.entries(artifacts).map(([key, artifact]: [string, any], index: number) => (
+                                        <option key={index} value={key}>
+                                            {key}: {artifact.name} {JSON.stringify(artifact)}
+                                        </option>
+                                    ))}
+                                </select>
+                                <textarea
+                                    className="w-full p-2 mb-4 border rounded"
+                                    placeholder="Type details of your request here"
+                                    rows={4}
+                                    value={details}
+                                    onChange={(e) => setDetails(e.target.value)}
+                                />
+                                <Button type="submit" className="w-full mb-4">
+                                    Send Request
+                                </Button>
+                            </form>
+                            {/* <Button className="mb-4"
                                 onClick={() => getReport('personal mental health apps', 'ceo')}
                                 disabled={marketingLoading}
                             >
@@ -281,7 +372,7 @@ export default function Home() {
                                 disabled={linkedInLoading}
                             >
                                 Create a LinkedIn Post about the latest AI trends
-                            </Button>
+                            </Button> */}
                             {marketingLoading && <p>Loading...</p>}
                             {marketingError && <p>Error: {marketingError}</p>}
                             {linkedInLoading && <p>Loading...</p>}
@@ -389,92 +480,62 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="col-span-1 p-4 border rounded shadow">
-                <h2 className="text-xl font-bold mb-4">Column 2</h2>
-                <div className="space-y-4">
-                    {linkedInReport && (
-                        <div>
-                            <h3>LinkedIn Post</h3>
-                            <div>
-                                <h4>Prompt:</h4>
-                                <div>
-                                    {linkedInReport.prompt && (
-                                        <div>
-                                            <button
-                                                onClick={() => setShowPrompt(!showPrompt)}
-                                                className="text-sm text-gray-500 hover:text-gray-700"
-                                            >
-                                                {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
-                                            </button>
-                                            {showPrompt && (
-                                                <pre className="mt-2">{linkedInReport.prompt}</pre>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div>
-                                <h4>Post Preview:</h4>
-                                <div style={{ maxWidth: '600px', margin: '20px 0' }}>
-                                    <LinkedInPreviews
-                                        url="example.com"
-                                        title="LinkedIn Post"
-                                        description={parseResult(linkedInReport.result).post}
-                                        name="AI Generated Post"
-                                        profileImage="https://placehold.co/200x200"
-                                    />
-                                </div>
-                                <div>
-                                    <h4>Raw Content:</h4>
-                                    <button
-                                        onClick={() => setShowRawContent(!showRawContent)}
-                                        className="text-sm text-gray-500 hover:text-gray-700"
-                                    >
-                                        {showRawContent ? 'Hide Raw Content' : 'Show Raw Content'}
-                                    </button>
-                                    {linkedInReport.result && showRawContent && (
-                                        <>
-                                            <pre className="mt-2">{JSON.stringify(parseResult(linkedInReport.result), null, 2)}</pre>
-                                            {parseResult(linkedInReport.result).post.split('\n').map((line: any, i: number) => (
-                                                <span key={i}>{line}</span>
-                                            ))}
-                                        </>
-                                    )}
 
 
-                                    {linkedInReport.result && (
-                                        <Button
-                                            onClick={() => sendManagerReviewNotification('ceo', 'marketing_manager', 'LinkedInPost', parseResult(linkedInReport.result).guid, parseResult(linkedInReport.result).post, 'Trying to grow thought leadership', 'review linkedin post')}
-
-                                        >
-                                            Get Manager Review
-                                        </Button>
-                                    )}
-
-
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <div className="col-span-1 p-4 border rounded shadow">
+            <div className="col-span-2 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Column 3</h2>
                 <div className="space-y-4">
                     <h1>Events</h1>
                     {events && events.length > 0 && (
                         events.map((event, index) => {
-                            if (JSON.parse(event.message).message_type === "Feedback") {
+
+                            if (event.message) {
                                 return (
-                                    <div key={index} style={{ border: '1px solid #ccc', padding: '8px', margin: '8px 0' }}>
-                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).feedback.split('\n').map((line: string, i: number) => (
-                                            <div key={i}>{line}</div>
-                                        ))}
-                                        <br />
-                                        Here's a revision of the artifact incorporating the feedback:
-                                        <br />
-                                        {JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '')).revised_artifact_json}
+
+                                    <div>
+                                        {typeof parseMessage(event) === 'object' && (
+                                            <>
+                                                <div>{JSON.stringify(parseMessage(event), null, 2)}</div>
+                                                <div className="prose">
+                                                    {(() => {
+                                                        const jsonContent = parseMessage(event);
+                                                        let markdown = '';
+
+                                                        // Convert JSON object to markdown
+                                                        for (const [key, value] of Object.entries(jsonContent)) {
+                                                            markdown += `### ${key}\n${value}\n\n`;
+                                                        }
+
+                                                        // Use a markdown parser library if available
+                                                        // For now, just render with basic formatting
+                                                        return (
+                                                            <div
+                                                                style={{ whiteSpace: 'pre-wrap' }}
+                                                                className="markdown-content"
+                                                            >
+                                                                {markdown}
+                                                            </div>
+                                                        );
+                                                    })()}
+                                                </div>
+                                            </>
+                                        )}
+                                        {typeof parseMessage(event) === 'string' && (
+                                            <div>
+                                                {/* <div>{parseMessage(event)}</div> */}
+                                            </div>
+                                        )}
+                                        {/* <div>{JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '').replace(/```/g, ''))}</div>
+
+                                        <div>{JSON.parse(event.message).content}</div> */}
+                                    </div>
+
+                                );
+                            }
+                            else {
+                                return (
+                                    <div>
+                                        <div>x{JSON.stringify(event)}</div>
                                     </div>
                                 );
                             }

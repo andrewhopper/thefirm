@@ -5,15 +5,15 @@ import coo from "../actors/team/cmo/profile";
 import ux_researcher from "../actors/team/ux-researcher/profile";
 import techlead from "../actors/team/techlead/profile";
 import ux_designer from "../actors/team/ux-designer/profile";
-import brand_director from "../actors/team/brand-director/profile";
+import brand_director from "../actors/team/brand_director/profile";
 import product_manager from "../actors/team/product-manager/profile";
 import cto from "../actors/team/cto/profile";
 import cmo from "../actors/team/cmo/profile";
-import business_analyst from "../actors/team/business-analyst/profile";
+import business_analyst from "../actors/team/business_analyst/profile";
 import copywriter from "../actors/team/copywriter/profile";
 import marketing_strategist from "../actors/team/marketing-strategist/profile";
 import frontend_eng from "../actors/team/frontend-eng/profile";
-import chief_of_staff from "../actors/team/chief-of-staff/profile";
+import chief_of_staff from "../actors/team/chief_of_staff/profile";
 import ciso from "../actors/team/ciso/profile";
 import andrew_context from "../context/context";
 
