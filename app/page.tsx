@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
 import { LinkedInPreviews } from '@automattic/social-previews';
 import { Button } from '../components/ui/button';
-import { roles } from '../src/actors/team/team';
+import { roles, getUserProfile } from '../src/actors/team/team';
 import { UserProfile } from '../src/user_profile';
 import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
 import parseMessage from './parser';
@@ -271,6 +271,11 @@ export default function Home() {
     const [requestArtifact, setRequestArtifact] = useState('MemoArtifact');
     const [responseArtifact, setResponseArtifact] = useState('Brand');
     const [details, setDetails] = useState('please create a brand manifesto for our new mindfulness brand');
+    const [rolesData, setRolesData] = useState<{ [key: string]: UserProfile }>({});
+
+    useEffect(() => {
+        setRolesData(roles);
+    }, []);
 
     return (
         <div className="w-full grid grid-cols-3 gap-4">
@@ -309,16 +314,16 @@ export default function Home() {
                             }}>
                                 From:
                                 <select className="w-full p-2 mb-4 border rounded" name="from" value={from} onChange={(e) => setFrom(e.target.value)}>
-                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
-                                        <option key={index} value={key}>
-                                            {role.name} - {role.attributes.role}
+                                    {Object.entries(rolesData).map(([roleKey, userProfileRole]: [string, UserProfile]) => (
+                                        <option key={roleKey} value={roleKey}>
+                                            {userProfileRole.name} - {userProfileRole.attributes.role}
                                         </option>
                                     ))}
                                 </select>
                                 To:
                                 <select className="w-full p-2 mb-4 border rounded" name="to" value={to} onChange={(e) => setTo(e.target.value)}>
-                                    {Object.entries(roles).map(([key, role]: [string, UserProfile], index: number) => (
-                                        <option key={index} value={key}>
+                                    {Object.entries(rolesData).map(([key, role]: [string, UserProfile]) => (
+                                        <option key={key} value={key}>
                                             {role.name} - {role.attributes.role}
                                         </option>
                                     ))}
@@ -492,7 +497,7 @@ export default function Home() {
                             if (event.message) {
                                 return (
 
-                                    <div>
+                                    <div key={index}>
                                         {typeof parseMessage(event) === 'object' && (
                                             <>
                                                 <div>{JSON.stringify(parseMessage(event), null, 2)}</div>
@@ -551,7 +556,7 @@ export default function Home() {
 
                                     ws.onmessage = (event) => {
                                         const data = JSON.parse(event.data);
-
+                                        console.log('Received WebSocket message:', data);
                                         setEvents(prev => [...prev, {
                                             ...data,
                                             timestamp: new Date().toISOString()
