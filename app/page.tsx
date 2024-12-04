@@ -8,7 +8,7 @@ import { roles, getUserProfile } from '../src/actors/team/team';
 import { UserProfile } from '../src/user_profile';
 import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
 import parseMessage from './parser';
-
+import ReactMarkdown from 'react-markdown';
 interface MarketingReport {
     result: string;
     prompt: string;
@@ -501,7 +501,7 @@ export default function Home() {
                                         {typeof parseMessage(event) === 'object' && (
                                             <>
                                                 <div>{JSON.stringify(parseMessage(event), null, 2)}</div>
-                                                <div className="prose">
+                                                <div className="prose max-w-none">
                                                     {(() => {
                                                         const jsonContent = parseMessage(event);
                                                         let markdown = '';
@@ -511,15 +511,33 @@ export default function Home() {
                                                             markdown += `### ${key}\n${value}\n\n`;
                                                         }
 
-                                                        // Use a markdown parser library if available
-                                                        // For now, just render with basic formatting
                                                         return (
-                                                            <div
-                                                                style={{ whiteSpace: 'pre-wrap' }}
-                                                                className="markdown-content"
+                                                            <ReactMarkdown
+                                                                components={{
+                                                                    h1: (props) => <h1 className="text-4xl font-bold mb-4" {...props} />,
+                                                                    h2: (props) => <h2 className="text-3xl font-bold mb-4" {...props} />,
+                                                                    h3: (props) => <h3 className="text-2xl font-bold mb-4" {...props} />,
+                                                                    h4: (props) => <h4 className="text-xl font-bold mb-4" {...props} />,
+                                                                    h5: (props) => <h5 className="text-lg font-bold mb-4" {...props} />,
+                                                                    h6: (props) => <h6 className="text-base font-bold mb-4" {...props} />,
+                                                                    p: (props) => <p className="text-gray-700 leading-relaxed" {...props} />,
+                                                                    pre: (props) => <pre className="bg-gray-100 p-4 rounded-lg text-sm" {...props} />,
+                                                                    code: (props) => <code className="bg-gray-100 p-1 rounded-lg text-sm" {...props} />,
+                                                                    ul: (props) => <ul className="list-disc list-inside text-gray-700" {...props} />,
+                                                                    ol: (props) => <ol className="list-decimal list-inside text-gray-700" {...props} />,
+                                                                    li: (props) => <li className="text-gray-700" {...props} />,
+                                                                    blockquote: (props) => <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700" {...props} />,
+                                                                    table: (props) => <table className="w-full border-collapse border border-gray-300" {...props} />,
+                                                                    thead: (props) => <thead className="bg-gray-100" {...props} />,
+                                                                    tbody: (props) => <tbody className="bg-white" {...props} />,
+                                                                    tr: (props) => <tr className="border-b border-gray-200" {...props} />,
+                                                                    th: (props) => <th className="p-2 text-left font-bold" {...props} />,
+                                                                    td: (props) => <td className="p-2 text-left" {...props} />,
+                                                                    img: (props) => <img className="w-full h-auto" {...props} />,
+                                                                }}
                                                             >
                                                                 {markdown}
-                                                            </div>
+                                                            </ReactMarkdown>
                                                         );
                                                     })()}
                                                 </div>
