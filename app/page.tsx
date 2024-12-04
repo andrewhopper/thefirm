@@ -9,6 +9,7 @@ import { UserProfile } from '../src/user_profile';
 import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata';
 import parseMessage from './parser';
 import ReactMarkdown from 'react-markdown';
+import EventView from '../components/event_view';
 interface MarketingReport {
     result: string;
     prompt: string;
@@ -272,10 +273,38 @@ export default function Home() {
     const [responseArtifact, setResponseArtifact] = useState('Brand');
     const [details, setDetails] = useState('please create a brand manifesto for our new mindfulness brand');
     const [rolesData, setRolesData] = useState<{ [key: string]: UserProfile }>({});
-
+    const [websocketDebugger, setWebsocketDebugger] = useState(false);
     useEffect(() => {
         setRolesData(roles);
     }, []);
+
+    useEffect(() => {
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Received WebSocket message:', data);
+            setEvents(prev => [...prev, {
+                ...data,
+                timestamp: new Date().toISOString()
+            }]);
+
+
+        };
+
+        return () => {
+            ws.close();
+        };
+    }, []);
+
+    useEffect(() => {
+        events.map((event) => {
+            if (event.message && event.message.message_type === "Feedback") {
+                alert(JSON.parse(event.message).content);
+                setFeedback(JSON.parse(event.message).content);
+            }
+        });
+    }, [events]);
 
     return (
         <div className="w-full grid grid-cols-3 gap-4">
@@ -506,47 +535,61 @@ export default function Home() {
                                                         const jsonContent = parseMessage(event);
                                                         let markdown = '';
 
+                                                        let colors: string[] = [];
                                                         // Convert JSON object to markdown
                                                         for (const [key, value] of Object.entries(jsonContent)) {
                                                             markdown += `### ${key}\n${value}\n\n`;
+                                                            if (key === "color_palette") {
+                                                                colors = value as string[];
+                                                            }
                                                         }
 
                                                         return (
-                                                            <ReactMarkdown
-                                                                components={{
-                                                                    h1: (props) => <h1 className="text-4xl font-bold mb-4" {...props} />,
-                                                                    h2: (props) => <h2 className="text-3xl font-bold mb-4" {...props} />,
-                                                                    h3: (props) => <h3 className="text-2xl font-bold mb-4" {...props} />,
-                                                                    h4: (props) => <h4 className="text-xl font-bold mb-4" {...props} />,
-                                                                    h5: (props) => <h5 className="text-lg font-bold mb-4" {...props} />,
-                                                                    h6: (props) => <h6 className="text-base font-bold mb-4" {...props} />,
-                                                                    p: (props) => <p className="text-gray-700 leading-relaxed" {...props} />,
-                                                                    pre: (props) => <pre className="bg-gray-100 p-4 rounded-lg text-sm" {...props} />,
-                                                                    code: (props) => <code className="bg-gray-100 p-1 rounded-lg text-sm" {...props} />,
-                                                                    ul: (props) => <ul className="list-disc list-inside text-gray-700" {...props} />,
-                                                                    ol: (props) => <ol className="list-decimal list-inside text-gray-700" {...props} />,
-                                                                    li: (props) => <li className="text-gray-700" {...props} />,
-                                                                    blockquote: (props) => <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700" {...props} />,
-                                                                    table: (props) => <table className="w-full border-collapse border border-gray-300" {...props} />,
-                                                                    thead: (props) => <thead className="bg-gray-100" {...props} />,
-                                                                    tbody: (props) => <tbody className="bg-white" {...props} />,
-                                                                    tr: (props) => <tr className="border-b border-gray-200" {...props} />,
-                                                                    th: (props) => <th className="p-2 text-left font-bold" {...props} />,
-                                                                    td: (props) => <td className="p-2 text-left" {...props} />,
-                                                                    img: (props) => <img className="w-full h-auto" {...props} />,
-                                                                }}
-                                                            >
-                                                                {markdown}
-                                                            </ReactMarkdown>
+                                                            <>
+                                                                {colors && colors.length > 0 && (
+                                                                    <div>
+                                                                        <h4 className="text-lg font-bold mb-4">Color Palette:</h4>
+                                                                        <div>
+                                                                            {colors.map((color: string, index: number) => (
+                                                                                <div key={index} style={{ backgroundColor: color, width: '100px', height: '100px', display: 'inline-block', marginRight: '5px' }}></div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                <ReactMarkdown
+                                                                    components={{
+                                                                        h1: (props) => <h1 className="text-4xl font-bold mb-4" {...props} />,
+                                                                        h2: (props) => <h2 className="text-3xl font-bold mb-4" {...props} />,
+                                                                        h3: (props) => <h3 className="text-2xl font-bold mb-4" {...props} />,
+                                                                        h4: (props) => <h4 className="text-xl font-bold mb-4" {...props} />,
+                                                                        h5: (props) => <h5 className="text-lg font-bold mb-4" {...props} />,
+                                                                        h6: (props) => <h6 className="text-base font-bold mb-4" {...props} />,
+                                                                        p: (props) => <p className="text-gray-700 leading-relaxed" {...props} />,
+                                                                        pre: (props) => <pre className="bg-gray-100 p-4 rounded-lg text-sm" {...props} />,
+                                                                        code: (props) => <code className="bg-gray-100 p-1 rounded-lg text-sm" {...props} />,
+                                                                        ul: (props) => <ul className="list-disc list-inside text-gray-700" {...props} />,
+                                                                        ol: (props) => <ol className="list-decimal list-inside text-gray-700" {...props} />,
+                                                                        li: (props) => <li className="text-gray-700" {...props} />,
+                                                                        blockquote: (props) => <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700" {...props} />,
+                                                                        table: (props) => <table className="w-full border-collapse border border-gray-300" {...props} />,
+                                                                        thead: (props) => <thead className="bg-gray-100" {...props} />,
+                                                                        tbody: (props) => <tbody className="bg-white" {...props} />,
+                                                                        tr: (props) => <tr className="border-b border-gray-200" {...props} />,
+                                                                        th: (props) => <th className="p-2 text-left font-bold" {...props} />,
+                                                                        td: (props) => <td className="p-2 text-left" {...props} />,
+                                                                        img: (props) => <img className="w-full h-auto" {...props} />,
+                                                                    }}
+                                                                >
+                                                                    {markdown}
+                                                                </ReactMarkdown>
+                                                            </>
                                                         );
                                                     })()}
                                                 </div>
                                             </>
                                         )}
                                         {typeof parseMessage(event) === 'string' && (
-                                            <div>
-                                                {/* <div>{parseMessage(event)}</div> */}
-                                            </div>
+                                            <EventView event={event} />
                                         )}
                                         {/* <div>{JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '').replace(/```/g, ''))}</div>
 
@@ -558,70 +601,60 @@ export default function Home() {
                             else {
                                 return (
                                     <div>
-                                        <div>x{JSON.stringify(event)}</div>
+                                        <EventView event={event} />
                                     </div>
                                 );
                             }
                         })
                     )}
-                    <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
-                        <h3>WebSocket Events</h3>
-                        <div id="events-container" style={{ height: '1000px', overflowY: 'auto' }}>
-                            {(() => {
 
-                                useEffect(() => {
-                                    const ws = new WebSocket('ws://localhost:8080');
+                    {!websocketDebugger && <Button
+                        onClick={() => setWebsocketDebugger(true)}
+                    >
+                        Show WebSocket Debugger
+                    </Button>
+                    }
+                    {websocketDebugger && (
+                        <>
+                            <Button
+                                onClick={() => setWebsocketDebugger(false)}
+                            >
+                                Hide WebSocket Debugger
+                            </Button>
+                            <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '4px' }}>
+                                <h3>WebSocket Events</h3>
+                                <div id="events-container" style={{ height: '1000px', overflowY: 'auto' }}>
+                                    {(() => {
 
-                                    ws.onmessage = (event) => {
-                                        const data = JSON.parse(event.data);
-                                        console.log('Received WebSocket message:', data);
-                                        setEvents(prev => [...prev, {
-                                            ...data,
-                                            timestamp: new Date().toISOString()
-                                        }]);
 
 
-                                    };
+                                        return (
+                                            <div style={{ maxHeight: '1000px', overflowY: 'auto' }}>
+                                                {events.map((event, index) => (
+                                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+                                                        <pre style={{ margin: 0, fontSize: '0.75rem' }}>
 
-                                    return () => {
-                                        ws.close();
-                                    };
-                                }, []);
-
-                                useEffect(() => {
-                                    events.map((event) => {
-                                        if (event.message && event.message.message_type === "Feedback") {
-                                            alert(JSON.parse(event.message).content);
-                                            setFeedback(JSON.parse(event.message).content);
-                                        }
-                                    });
-                                }, [events]);
-
-                                return (
-                                    <div style={{ maxHeight: '1000px', overflowY: 'auto' }}>
-                                        {events.map((event, index) => (
-                                            <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-                                                <pre style={{ margin: 0, fontSize: '0.75rem' }}>
-
-                                                    {JSON.stringify({
-                                                        key: event.key,
-                                                        event: event.event,
-                                                        time: new Date(event.timestamp).toLocaleString(),
-                                                        message: JSON.parse(event.message)
-                                                    }, null, 2)}
-                                                </pre>
+                                                            {JSON.stringify({
+                                                                key: event.key,
+                                                                event: event.event,
+                                                                time: new Date(event.timestamp).toLocaleString(),
+                                                                message: JSON.parse(event.message)
+                                                            }, null, 2)}
+                                                        </pre>
+                                                    </div>
+                                                ))}
+                                                {events.length === 0 && (
+                                                    <div style={{ padding: '8px', color: '#666' }}>
+                                                        No events received yet...
+                                                    </div>
+                                                )}
                                             </div>
-                                        ))}
-                                        {events.length === 0 && (
-                                            <div style={{ padding: '8px', color: '#666' }}>
-                                                No events received yet...
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })()}
-                        </div>
-                    </div>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
