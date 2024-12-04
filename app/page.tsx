@@ -354,7 +354,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'marketing_director',
+                                    'ceo',
                                     'brand_director',
                                     'Brand',
                                     'Brand',
@@ -367,7 +367,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'brand_director',
+                                    'ceo',
                                     'ux_designer',
                                     'Brand',
                                     'BrandStyleGuide',
@@ -380,7 +380,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'marketing_director',
+                                    'ceo',
                                     'marketing_strategist',
                                     'Brand',
                                     'ReportArtifact',
@@ -393,7 +393,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'marketing_strategist',
+                                    'ceo',
                                     'content_writer',
                                     'ReportArtifact',
                                     'LinkedInPost',
@@ -421,7 +421,7 @@ export default function Home() {
                                     'ceo',
                                     'chief_of_staff',
                                     'MemoArtifact',
-                                    'LinkedIn',
+                                    'LinkedInPost',
                                     'create a linkedin post about AI and mental health'
                                 )}
                             >
@@ -431,7 +431,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'cmo',
+                                    'ceo',
                                     'social_media_marketer',
                                     'MemoArtifact',
                                     'ReportArtifact',
@@ -444,7 +444,7 @@ export default function Home() {
                             <Button
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
-                                    'cpo',
+                                    'ceo',
                                     'ux_researcher',
                                     'MemoArtifact',
                                     'ReportArtifact',

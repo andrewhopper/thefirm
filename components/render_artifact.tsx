@@ -11,7 +11,7 @@ interface RenderArtifactProps {
 export function renderArtifact(type: string, body: string) {
     return (
         <div className="p-4">
-            <h3 className="text-xl font-bold mb-4">{type}</h3>
+            <h2 className="text-xl font-bold mb-4">{type}</h2>
             <div>{body}</div>
         </div>
     );
@@ -35,7 +35,7 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
         let artifact = JSON.parse(body) as artifacts.ReportArtifact;
         return (
             <div>
-                <h3>{type}</h3>
+                <h2 className="text-xl font-bold mb-4">{type}</h2>
                 <div>{artifact.name}</div>
                 <div>{JSON.stringify(artifact.sections)}</div>
 
@@ -61,7 +61,7 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
         let artifact = JSON.parse(body) as artifacts.MemoArtifact;
         return (
             <div>
-                <h3>{type}</h3>
+                <h2 className="text-xl font-bold mb-4">{type}</h2>
                 <div>{artifact.title}</div>
                 <div>{artifact.memo}</div>
             </div>
@@ -71,7 +71,7 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
         let artifact = JSON.parse(body) as artifacts.BrandStyleGuide;
         return (
             <div>
-                <h3>{type}</h3>
+                <h2 className="text-xl font-bold mb-4">{type}</h2>
                 <div>{artifact.color_palette}</div>
                 <div>{JSON.stringify(artifact.logo)}</div>
             </div>
@@ -81,7 +81,7 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
         let artifact = JSON.parse(body) as artifacts.Brand;
         return (
             <div>
-                <h3>{type}</h3>
+                <h2 className="text-xl font-bold mb-4">{type}</h2>
                 <div>{artifact.name}</div>
                 <div>{artifact.tone_of_voice}</div>
                 <div>{artifact.brand_voice}</div>
