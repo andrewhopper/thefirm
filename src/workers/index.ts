@@ -21,7 +21,7 @@ console.log(OPENAI_API_KEY);
 
 
 const model = new OpenAI({
-    modelName: "gpt-4o-mini",
+    modelName: "gpt-4o",
     temperature: 0.7,
     maxTokens: 2000,
 });
@@ -79,6 +79,15 @@ async function initializeWorker() {
                         content: result,
                         message: result
                     });
+
+                    await orchestrator.publish('artifacts', {
+                        message: { direction: "outbound" },
+                        channel: 'artifacts',
+                        direction: "outbound",
+                        artifact_type: message.message.responseArtifact,
+                        artifact_body: result
+                    });
+
 
                     if (message.message.responseArtifact === "Brand") {
                         await orchestrator.publish("ux-designer", {

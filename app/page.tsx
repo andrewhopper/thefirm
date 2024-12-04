@@ -10,6 +10,8 @@ import { getArtifactSchema, artifacts } from '../src/artifacts/artifact_metadata
 import parseMessage from './parser';
 import ReactMarkdown from 'react-markdown';
 import EventView from '../components/event_view';
+import RenderArtifact from '../components/render_artifact';
+import marketing_strategist from '@/src/actors/team/marketing_analyst/profile';
 interface MarketingReport {
     result: string;
     prompt: string;
@@ -231,6 +233,15 @@ function revisionUI(guid: string) {
     );
 }
 
+const testCases = [
+    { from: 'ceo', to: 'marketing_strategist', requestArtifact: 'MemoArtifact', responseArtifact: 'ReportArtifact', details: 'research on the latest trends in the mental health app market' },
+    { from: 'ceo', to: 'product_manager', requestArtifact: 'MemoArtifact', responseArtifact: 'ReportArtifact', details: 'create a report on the latest trends in the mental health app market' },
+    { from: 'ceo', to: 'chief_of_staff', requestArtifact: 'MemoArtifact', responseArtifact: 'LinkedIn', details: 'create a linkedin post about AI and mental health' },
+    { from: 'ceo', to: 'brand_director', requestArtifact: 'MemoArtifact', responseArtifact: 'Brand', details: 'create a brand concept for a new mindfulness app' },
+    { from: 'cmo', to: 'social_media_marketer', requestArtifact: 'MemoArtifact', responseArtifact: 'ReportArtifact', details: 'create a campaign plan to launch our new mindfulness app on Twitter, Tiktok, and Instagram' },
+    { from: 'cpo', to: 'ux_researcher', requestArtifact: 'MemoArtifact', responseArtifact: 'ReportArtifact', details: 'research the key customer segments for our new mindfulness app' },
+]
+
 function parseResult(result: string) {
     const parsedResult = result.replace(/```json|```/g, '').replace(/^\n|\n$/g, '');
     const jsonResult = JSON.parse(parsedResult);
@@ -338,6 +349,111 @@ export default function Home() {
                             Send Test WebSocket Message
                         </Button>
 
+
+                        <div className="space-y-2">
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'marketing_director',
+                                    'brand_director',
+                                    'Brand',
+                                    'Brand',
+                                    'Create a brand identity for our new product line of eco-friendly office supplies'
+                                )}
+                            >
+                                Marketing Director → Brand Director: Create Brand Identity
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'brand_director',
+                                    'ux_designer',
+                                    'Brand',
+                                    'BrandStyleGuide',
+                                    'Design a comprehensive style guide based on our brand identity'
+                                )}
+                            >
+                                Brand Director → UX Designer: Create Style Guide
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'marketing_director',
+                                    'marketing_strategist',
+                                    'Brand',
+                                    'ReportArtifact',
+                                    'Create a marketing strategy report for Q1 2024'
+                                )}
+                            >
+                                Marketing Director → Marketing Strategist: Generate Marketing Report
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'marketing_strategist',
+                                    'content_writer',
+                                    'ReportArtifact',
+                                    'LinkedInPost',
+                                    'Write a LinkedIn post about our new eco-friendly product line'
+                                )}
+                            >
+                                Marketing Strategist → Content Writer: Create LinkedIn Post
+                            </Button>
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'ceo',
+                                    'product_manager',
+                                    'MemoArtifact',
+                                    'ReportArtifact',
+                                    'create a report on the latest trends in the mental health app market'
+                                )}
+                            >
+                                CEO → Product Manager: Mental Health App Market Report
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'ceo',
+                                    'chief_of_staff',
+                                    'MemoArtifact',
+                                    'LinkedIn',
+                                    'create a linkedin post about AI and mental health'
+                                )}
+                            >
+                                CEO → Chief of Staff: AI & Mental Health LinkedIn Post
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'cmo',
+                                    'social_media_marketer',
+                                    'MemoArtifact',
+                                    'ReportArtifact',
+                                    'create a campaign plan to launch our new mindfulness app on Twitter, Tiktok, and Instagram'
+                                )}
+                            >
+                                CMO → Social Media Marketer: Social Media Campaign Plan
+                            </Button>
+
+                            <Button
+                                className="w-full"
+                                onClick={() => handleSubmitRequest(
+                                    'cpo',
+                                    'ux_researcher',
+                                    'MemoArtifact',
+                                    'ReportArtifact',
+                                    'research the key customer segments for our new mindfulness app'
+                                )}
+                            >
+                                CPO → UX Researcher: Customer Segments Research
+                            </Button>
+                        </div>
 
 
 
@@ -670,7 +786,22 @@ export default function Home() {
             </div>
             <div className="col-span-1 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Artifacts</h2>
-                {JSON.stringify(generatedArtifacts)}
+                {events.map((event, index) => {
+                    if (JSON.parse(event.message).channel === 'artifacts') {
+                        return (
+                            <div key={index}>
+                                <RenderArtifact type={JSON.parse(event.message).artifact_type} body={JSON.parse(event.message).artifact_body} />
+                            </div>
+                        );
+                    }
+                    // else {
+                    //     return (
+                    //         // <div key={index}>
+                    //         //     type: {JSON.parse(event.message).artifact_type}
+                    //         // </div>
+                    //     );
+                    // }
+                })}
             </div>
         </div>
 
