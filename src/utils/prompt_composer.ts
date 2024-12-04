@@ -31,7 +31,7 @@ const task_prompt = (artifact: string, task: string, requester: UserProfile, for
         "\n\n<request>You are tasked with " + task + ".</request>" +
         // "\n\nPlease create 2 versions of the artifact, each more refined than the last.</request>" +
         " \n\n<formatting correct responses>You are generating a " + artifact + " artifact. " +
-        "\nReturn the artifact as " + format + ". Use the following schema to help you create the artifact: " + getArtifactSchema(artifact) + "</formatting correct responses>";
+        "\nReturn the artifact as " + format + ". Do not include any other text or comments.  Don't use any other formatting. Don't include json``` or ```json. Use the following schema to help you create the artifact: " + getArtifactSchema(artifact) + "</formatting correct responses>";
 }
 
 

@@ -32,7 +32,7 @@ const roles: { [key: string]: UserProfile } = {
     'ux_researcher': ux_researcher
 };
 
-export function getUserProfile(role: string) {
+const getUserProfile = (role: string) => {
     console.log("fetching user profile for role: ", role);
     if (roles[role] === undefined) {
         throw new Error("User profile is undefined");
@@ -40,5 +40,5 @@ export function getUserProfile(role: string) {
     return roles[role];
 }
 
-export { roles };
+export { roles, getUserProfile };
 

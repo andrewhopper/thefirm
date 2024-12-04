@@ -238,13 +238,11 @@ class BrandStyleGuide extends Artifact {
     color_palette: string[];
     @PropertyType()
     logo: LogoLibrary;
-    @PropertyType()
-    brand: Brand;
-    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, color_palette: string[], logo: LogoLibrary, brand: Brand) {
+
+    constructor(guid: string, created_at: Date, updated_at: Date, creators: string[], name: string, description: string, version: number, color_palette: string[], logo: LogoLibrary) {
         super(guid, created_at, updated_at, creators, name, description, version);
         this.color_palette = color_palette;
         this.logo = logo;
-        this.brand = brand;
     }
 }
 
@@ -477,4 +475,7 @@ class EmailMessageArtifact extends Artifact {
     }
 }
 
-export { Artifact, Code, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, Presentation, EmailMessageArtifact, Logo, LogoLibrary, Brand, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide };
+export {
+    Artifact, Code, DocumentArtifact, DesignArtifact, ResearchArtifact, MemoArtifact, ReportArtifact, Presentation, EmailMessageArtifact,
+    Logo, LogoLibrary, LinkedInPost, TwitterPost, Brand, ReportSection, ReportSectionContent, BrandStyleGuide, DesignBrief, DesignMockup, DesignPatternLibrary, DesignResearch, DesignStyleGuide
+};
