@@ -274,6 +274,8 @@ export default function Home() {
     const [details, setDetails] = useState('please create a brand manifesto for our new mindfulness brand');
     const [rolesData, setRolesData] = useState<{ [key: string]: UserProfile }>({});
     const [websocketDebugger, setWebsocketDebugger] = useState(false);
+    const [generatedArtifacts, setGeneratedArtifacts] = useState<Array<any>>([]);
+
     useEffect(() => {
         setRolesData(roles);
     }, []);
@@ -288,7 +290,15 @@ export default function Home() {
                 ...data,
                 timestamp: new Date().toISOString()
             }]);
+            if (typeof parseMessage(data) === 'object') {
+                setGeneratedArtifacts(prev => [...prev, parseMessage(data)]);
+            }
+            else {
+                setGeneratedArtifacts(prev => [...prev, data]);
+                console.log('Received non-object message:', data);
+                console.log(event);
 
+            }
 
         };
 
@@ -298,6 +308,8 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
+
+
         events.map((event) => {
             if (event.message && event.message.message_type === "Feedback") {
                 alert(JSON.parse(event.message).content);
@@ -307,14 +319,13 @@ export default function Home() {
     }, [events]);
 
     return (
-        <div className="w-full grid grid-cols-3 gap-4">
+        <div className="w-full grid grid-cols-3 gap-4 p-4">
             <div className="col-span-1 p-4 border rounded shadow">
-                <h2 className="text-xl font-bold mb-4">Column 1</h2>
+                <h2 className="text-xl font-bold mb-4">BizML</h2>
                 <div className="space-y-4">
 
                     <div className="p-4">
-                        <h1 className="text-2xl font-bold">Welcome to Next.js</h1>
-                        <h2 className="text-lg font-bold">CEO</h2>
+
 
                         <Button
                             className="mb-4"
@@ -516,8 +527,8 @@ export default function Home() {
 
 
 
-            <div className="col-span-2 p-4 border rounded shadow">
-                <h2 className="text-xl font-bold mb-4">Column 3</h2>
+            <div className="col-span-1 p-4 border rounded shadow">
+                <h2 className="text-xl font-bold mb-4">Traces</h2>
                 <div className="space-y-4">
                     <h1>Events</h1>
                     {events && events.length > 0 && (
@@ -529,7 +540,7 @@ export default function Home() {
                                     <div key={index}>
                                         {typeof parseMessage(event) === 'object' && (
                                             <>
-                                                <div>{JSON.stringify(parseMessage(event), null, 2)}</div>
+                                                <EventView event={event} />
                                                 <div className="prose max-w-none">
                                                     {(() => {
                                                         const jsonContent = parseMessage(event);
@@ -656,6 +667,10 @@ export default function Home() {
                         </>
                     )}
                 </div>
+            </div>
+            <div className="col-span-1 p-4 border rounded shadow">
+                <h2 className="text-xl font-bold mb-4">Artifacts</h2>
+                {JSON.stringify(generatedArtifacts)}
             </div>
         </div>
 
