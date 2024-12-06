@@ -19,8 +19,9 @@ export function renderArtifact(type: string, body: string) {
 
 const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
     if (type === "LinkedInPost") {
-        let artifact = JSON.parse(body) as artifacts.LinkedInPost;
-        return renderArtifact(type, artifact.post);
+        return JSON.stringify(body);
+        //     let artifact = JSON.parse(body) as artifacts.LinkedInPost;
+        //     return renderArtifact(type, artifact.post);
     }
     if (type === "TwitterPost") {
         let artifact = JSON.parse(body) as artifacts.TwitterPost;

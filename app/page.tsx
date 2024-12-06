@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import EventView from '../components/event_view';
 import RenderArtifact from '../components/render_artifact';
 import marketing_strategist from '@/src/actors/team/marketing_analyst/profile';
+import RedisWebSocket from '../src/services/websocker-client';
 interface MarketingReport {
     result: string;
     prompt: string;
@@ -37,7 +38,7 @@ function renderBrandStyleGuide(brandStyleGuide: string) {
 async function sendManagerReviewNotification(from: string, to: string, artifact_type: string, artifact_guid: string, artifact: string, context: string, task: string) {
     // Send a notification about the manager review request
     console.log('Sending manager review notification via ws');
-    const result = redisWs.sendMessage('chat', {
+    const result = redisWs.sendMessage({
         action: 'new_review_requested',
         from: from,
         to: to,
@@ -69,75 +70,6 @@ async function fetchLinkedInPost(topic: string, requester: string, dryrun = fals
 }
 
 
-class RedisWebSocket {
-    private ws: WebSocket;
-    private url: string;
-    constructor(url = 'ws://localhost:8080') {
-        this.url = url;
-        this.connect();
-    }
-
-    connect() {
-        this.ws = new WebSocket(this.url);
-
-        this.ws.onopen = () => {
-            console.log('Connected to WebSocket server');
-        };
-
-        this.ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('Redis event:', data);
-            // Handle the event here
-        };
-
-        this.ws.onclose = () => {
-            console.log('Disconnected from WebSocket server');
-            // Reconnect after 5 seconds
-            setTimeout(() => this.connect(), 5000);
-        };
-    }
-
-    sendMessage(channel: string, message: any) {
-        try {
-            this.ws.send(JSON.stringify({
-                channel,
-                message
-            }));
-            return true;
-        } catch (error) {
-            console.error('WebSocket error:', error);
-            return false;
-        }
-    }
-}
-
-async function sendRedisMessage(channel: string, message: any): Promise<void> {
-    // Try to connect to WebSocket server
-    try {
-        const ws = new WebSocket('ws://localhost:8080');
-
-        console.log('Sending message to Redis');
-        console.log(channel, message);
-        // Send message once connected
-        ws.onopen = () => {
-            ws.send(JSON.stringify({
-                channel,
-                message
-            }));
-        };
-        console.log('Message sent to Redis');
-
-        // Handle any errors
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-            throw new Error('Failed to send WebSocket message');
-        };
-    } catch (error) {
-        console.error('WebSocket connection failed:', error);
-        throw new Error('Failed to connect to WebSocket server');
-    }
-
-}
 
 
 function useMarketingReport() {
@@ -254,7 +186,7 @@ const redisWs = new RedisWebSocket();
 
 // Add this before the Home component
 function handleSubmitRequest(to: string, from: string, requestArtifact: string, responseArtifact: string, details: string) {
-    redisWs.sendMessage(to, {
+    const data = {
         direction: "inbound",
         from: from,
         to: to,
@@ -262,9 +194,12 @@ function handleSubmitRequest(to: string, from: string, requestArtifact: string, 
         responseArtifact: responseArtifact,
         details: details,
         timestamp: new Date().toISOString()
-    });
+    }
 
-    console.log('Request submitted with:', { from, to, requestArtifact, responseArtifact, details });
+    redisWs.sendMessage(data);
+    console.log('--- STEP 1 ----');
+    console.log('line 199 - page.tsx');
+    console.log('Request submitted with:', data);
 }
 
 export default function Home() {
@@ -295,21 +230,39 @@ export default function Home() {
         const ws = new WebSocket('ws://localhost:8080');
 
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('Received WebSocket message:', data);
+            console.log('Received WebSocket message (page.tsx 258):', event);
+            const event_data = event.data;
+
+            console.log('STEP 3 - Parsing websocket message and adding to events state ');
+            console.log('Line 237 - page.tsx');
+            console.log('Parsed message (page.tsx 234) | type :', typeof event_data + " " + event_data);
+
+            let msg = event_data;
+            try {
+                console.log('STEP 4 - Parsing websocket message- SUCCESS');
+                msg = JSON.parse(event_data);
+                console.log('Successfully parsed websocket message (page.tsx 243):', msg);
+            } catch (e) {
+                console.log('STEP 4 - Parsing websocket message- FAILURE');
+                console.log('Error parsing websocket message (page.tsx 240):', e);
+            }
+
             setEvents(prev => [...prev, {
-                ...data,
+                ...msg,
                 timestamp: new Date().toISOString()
             }]);
-            if (typeof parseMessage(data) === 'object') {
-                setGeneratedArtifacts(prev => [...prev, parseMessage(data)]);
-            }
-            else {
-                setGeneratedArtifacts(prev => [...prev, data]);
-                console.log('Received non-object message:', data);
-                console.log(event);
 
-            }
+
+            // if (typeof parseMessage(data) === 'object') {
+            //     setGeneratedArtifacts(prev => [...prev, parseMessage(data)]);
+            // }
+            // else {
+            // @todo fix artifact extraction
+            //     setGeneratedArtifacts(prev => [...prev, data]);
+            //     console.log('Received non-object message:', data);
+            //     console.log(event);
+
+            // }
 
         };
 
@@ -318,16 +271,7 @@ export default function Home() {
         };
     }, []);
 
-    useEffect(() => {
 
-
-        events.map((event) => {
-            if (event.message && event.message.message_type === "Feedback") {
-                alert(JSON.parse(event.message).content);
-                setFeedback(JSON.parse(event.message).content);
-            }
-        });
-    }, [events]);
 
     return (
         <div className="w-full grid grid-cols-3 gap-4 p-4">
@@ -340,11 +284,13 @@ export default function Home() {
 
                         <Button
                             className="mb-4"
-                            onClick={() => redisWs.sendMessage('test_channel', {
-                                action: 'button_clicked',
-                                timestamp: new Date().toISOString()
-                            })}
-
+                            onClick={() => handleSubmitRequest(
+                                'foo',
+                                'foo',
+                                'NoOp',
+                                'NoOp',
+                                'Test WebSocket Message'
+                            )}
                         >
                             Send Test WebSocket Message
                         </Button>
@@ -649,89 +595,21 @@ export default function Home() {
                     <h1>Events</h1>
                     {events && events.length > 0 && (
                         events.map((event, index) => {
-
-                            if (event.message) {
-                                return (
-
-                                    <div key={index}>
-                                        {typeof parseMessage(event) === 'object' && (
-                                            <>
-                                                <EventView event={event} />
-                                                <div className="prose max-w-none">
-                                                    {(() => {
-                                                        const jsonContent = parseMessage(event);
-                                                        let markdown = '';
-
-                                                        let colors: string[] = [];
-                                                        // Convert JSON object to markdown
-                                                        for (const [key, value] of Object.entries(jsonContent)) {
-                                                            markdown += `### ${key}\n${value}\n\n`;
-                                                            if (key === "color_palette") {
-                                                                colors = value as string[];
-                                                            }
-                                                        }
-
-                                                        return (
-                                                            <>
-                                                                {colors && colors.length > 0 && (
-                                                                    <div>
-                                                                        <h4 className="text-lg font-bold mb-4">Color Palette:</h4>
-                                                                        <div>
-                                                                            {colors.map((color: string, index: number) => (
-                                                                                <div key={index} style={{ backgroundColor: color, width: '100px', height: '100px', display: 'inline-block', marginRight: '5px' }}></div>
-                                                                            ))}
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                                <ReactMarkdown
-                                                                    components={{
-                                                                        h1: (props) => <h1 className="text-4xl font-bold mb-4" {...props} />,
-                                                                        h2: (props) => <h2 className="text-3xl font-bold mb-4" {...props} />,
-                                                                        h3: (props) => <h3 className="text-2xl font-bold mb-4" {...props} />,
-                                                                        h4: (props) => <h4 className="text-xl font-bold mb-4" {...props} />,
-                                                                        h5: (props) => <h5 className="text-lg font-bold mb-4" {...props} />,
-                                                                        h6: (props) => <h6 className="text-base font-bold mb-4" {...props} />,
-                                                                        p: (props) => <p className="text-gray-700 leading-relaxed" {...props} />,
-                                                                        pre: (props) => <pre className="bg-gray-100 p-4 rounded-lg text-sm" {...props} />,
-                                                                        code: (props) => <code className="bg-gray-100 p-1 rounded-lg text-sm" {...props} />,
-                                                                        ul: (props) => <ul className="list-disc list-inside text-gray-700" {...props} />,
-                                                                        ol: (props) => <ol className="list-decimal list-inside text-gray-700" {...props} />,
-                                                                        li: (props) => <li className="text-gray-700" {...props} />,
-                                                                        blockquote: (props) => <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700" {...props} />,
-                                                                        table: (props) => <table className="w-full border-collapse border border-gray-300" {...props} />,
-                                                                        thead: (props) => <thead className="bg-gray-100" {...props} />,
-                                                                        tbody: (props) => <tbody className="bg-white" {...props} />,
-                                                                        tr: (props) => <tr className="border-b border-gray-200" {...props} />,
-                                                                        th: (props) => <th className="p-2 text-left font-bold" {...props} />,
-                                                                        td: (props) => <td className="p-2 text-left" {...props} />,
-                                                                        img: (props) => <img className="w-full h-auto" {...props} />,
-                                                                    }}
-                                                                >
-                                                                    {markdown}
-                                                                </ReactMarkdown>
-                                                            </>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            </>
-                                        )}
-                                        {typeof parseMessage(event) === 'string' && (
-                                            <EventView event={event} />
-                                        )}
-                                        {/* <div>{JSON.parse(JSON.parse(event.message).content.replace(/```json|```/g, '').replace(/```/g, ''))}</div>
-
-                                        <div>{JSON.parse(event.message).content}</div> */}
-                                    </div>
-
-                                );
-                            }
-                            else {
-                                return (
+                            return (
+                                <div key={index}>
+                                    <h1>Event Viewer: {typeof event}</h1>
                                     <div>
-                                        <EventView event={event} />
+                                        <h3>Event Keys:</h3>
+                                        {Object.keys(event).map((key, i) => (
+                                            <div key={i} className="text-sm text-gray-600">
+                                                {key}
+                                            </div>
+                                        ))}
                                     </div>
-                                );
-                            }
+
+                                    <EventView event={event} />
+                                </div>
+                            );
                         })
                     )}
 
@@ -752,31 +630,19 @@ export default function Home() {
                                 <h3>WebSocket Events</h3>
                                 <div id="events-container" style={{ height: '1000px', overflowY: 'auto' }}>
                                     {(() => {
-
-
-
                                         return (
-                                            <div style={{ maxHeight: '1000px', overflowY: 'auto' }}>
+                                            <div>
                                                 {events.map((event, index) => (
-                                                    <div key={index} style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-                                                        <pre style={{ margin: 0, fontSize: '0.75rem' }}>
 
-                                                            {JSON.stringify({
-                                                                key: event.key,
-                                                                event: event.event,
-                                                                time: new Date(event.timestamp).toLocaleString(),
-                                                                message: JSON.parse(event.message)
-                                                            }, null, 2)}
-                                                        </pre>
+                                                    <div key={index}>
+                                                        <h1>websocket debugger: {typeof event}</h1>
+                                                        {JSON.stringify(event)}
                                                     </div>
                                                 ))}
-                                                {events.length === 0 && (
-                                                    <div style={{ padding: '8px', color: '#666' }}>
-                                                        No events received yet...
-                                                    </div>
-                                                )}
                                             </div>
                                         );
+
+
                                     })()}
                                 </div>
                             </div>
@@ -787,10 +653,18 @@ export default function Home() {
             <div className="col-span-1 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Artifacts</h2>
                 {events.map((event, index) => {
-                    if (JSON.parse(event.message).channel === 'artifacts') {
+                    try {
+                        if (JSON.parse(event.message).channel === 'artifacts') {
+                            return (
+                                <div key={index}>
+                                    <RenderArtifact type={JSON.parse(event.message).artifact_type} body={JSON.parse(event.message).artifact_body} />
+                                </div>
+                            );
+                        }
+                    } catch (e) {
                         return (
                             <div key={index}>
-                                <RenderArtifact type={JSON.parse(event.message).artifact_type} body={JSON.parse(event.message).artifact_body} />
+                                {JSON.stringify(event)}
                             </div>
                         );
                     }

@@ -35,8 +35,17 @@ async function initializeWorker() {
         // Listen for specific events that require team member actions
         orchestrator.on('message', async ({ channel, message }) => {
 
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log(typeof message);
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
             console.log("Received message on channel:", channel);
-            console.log("Message:", message);
+            console.log("Message:", JSON.parse(message));
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log("--------------------------------");
@@ -48,7 +57,7 @@ async function initializeWorker() {
             console.log("--------------------------------");
             console.log("--------------------------------");
 
-            if (message.message.direction === "inbound") {
+            if (message.direction === "inbound") {
                 try {
                     const prompt = PromptComposer(
                         message.message.details,  // task

@@ -52,7 +52,7 @@ export class RedisEventOrchestrator extends EventEmitter {
 
     private handleMessage(message: string, channel: string) {
         try {
-            const parsedMessage = JSON.parse(message);
+            const parsedMessage = message;
             console.log(`[${channel}] Received message:`, parsedMessage);
 
             // Emit event for external listeners
@@ -104,7 +104,7 @@ export class RedisEventOrchestrator extends EventEmitter {
 
     private handleLLMResponseEvents(message: string, channel: string) {
         try {
-            const data = JSON.parse(message);
+            const data = message;
             console.log(`Processing LLM response event on ${channel}:`, data);
         } catch (error) {
             console.error('Error handling LLM response event:', error);

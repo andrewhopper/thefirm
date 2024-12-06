@@ -3,8 +3,6 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "start-ws": "tsx src/websocker-server.ts",
-        "start-workers": "tsx src/workers/index.ts",
         "start-overview": "tsx src/reports/overview.tsx",
         "test": "jest",
         "compile-types": "tsx ./bin/compile_types.tsx && tsx ./bin/compile_enums.tsx"

@@ -26,11 +26,15 @@ function createWebSocketServer(port: number = 8080) {
         // Broadcast to all connected WebSocket clients
         wss.clients.forEach((client: ExtendedWebSocket) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({
+                const data = {
                     channel,
                     message,
                     timestamp: new Date().toISOString()
-                }));
+                };
+                // stringify data to send to client
+                // websockets only supports strings and blobs
+                console.log('Broadcasting message to client (websocket-server.ts 36):', data);
+                client.send(JSON.stringify(data));
             }
         });
     });
@@ -53,7 +57,12 @@ function createWebSocketServer(port: number = 8080) {
         // Handle incoming messages
         ws.on('message', async (data: Buffer | ArrayBuffer | Buffer[]) => {
             try {
-                const message = data.toString();
+                const message = JSON.stringify(data.toString());
+                console.log('--------------------------------');
+                console.log('line 37 - websocket-server.ts');
+                console.log(message);
+                console.log(typeof message);
+                console.log('--------------------------------');
                 console.log(`[${clientId}] Message received:`, {
                     timestamp: new Date().toISOString(),
                     data: message
@@ -79,11 +88,13 @@ function createWebSocketServer(port: number = 8080) {
             console.log(`Broadcasting message from Redis channel ${channel}:`, message);
 
             // Broadcast to all connected WebSocket clients
-            ws.send(JSON.stringify({
+            const data = {
                 channel,
-                message,
+                message: message,
                 timestamp: new Date().toISOString()
-            }));
+            };
+            console.log('Broadcasting message to client (websocket-server.ts 85):', data);
+            ws.send(message);
         });
 
         // Handle client errors

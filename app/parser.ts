@@ -12,15 +12,20 @@ function parseMessage(message: object) {
     // Get the message attribute from the object
     const messageStr = (message as any).message;
     if (messageStr) {
-        // Parse the JSON string into an object
-        const messageObj = JSON.parse(stripIt(messageStr));
-
         try {
-            const artifact = JSON.parse(stripIt(messageObj.content))
-            return artifact
+            // Parse the JSON string into an object
+            const messageObj = JSON.parse(stripIt(messageStr));
+            try {
+                const artifact = JSON.parse(stripIt(messageObj.content))
+                return artifact
+            } catch (e) {
+                return JSON.stringify(message)
+            }
+
         } catch (e) {
             return JSON.stringify(message)
         }
+
 
 
     }

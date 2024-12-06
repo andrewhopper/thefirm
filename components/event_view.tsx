@@ -9,15 +9,22 @@ export default function EventView({ event }: EventViewProps) {
     return (
         <div>
             {(() => {
-                const eventStr = JSON.stringify(event);
                 return isExpanded ? (
                     <div onClick={() => setIsExpanded(false)} style={{ cursor: 'pointer' }}>
-                        {eventStr}
+                        <h1>Event Viewer: {typeof event}</h1>
+                        <pre>
+                            {JSON.stringify(event)}
+
+                        </pre>
+
                         <div className="text-sm text-gray-500 mt-1">(Click to hide)</div>
                     </div>
                 ) : (
                     <div onClick={() => setIsExpanded(true)} style={{ cursor: 'pointer' }}>
-                        {eventStr.slice(0, 50)}... (Click to expand)
+                        <h1>Event Viewer: {typeof event}</h1>
+
+                        {JSON.stringify(event).slice(0, 50)}... (Click to expand)
+
                     </div>
                 );
             })()}
