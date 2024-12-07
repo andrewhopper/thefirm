@@ -8,9 +8,22 @@ interface RenderArtifactProps {
     body: object;
 }
 
+export function renderArtifact(type: string, body: string) {
+    return (
+        <div>
+            <h1>{type}</h1>
+            <div>{JSON.stringify(body)}</div>
+        </div>
+    );
+}
 
 
 const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
+
+    if (type === "MemoArtifact") {
+        let artifact = body as artifacts.MemoArtifact;
+        return renderArtifact(type, artifact.memo);
+    }
     return (
         <div>
             <h1>{type}</h1>
@@ -22,10 +35,7 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
             ))} */}
         </div>
     );
-    if (type === "LinkedInPost") {
-        let artifact = JSON.parse(body) as artifacts.LinkedInPost;
-        return renderArtifact(type, artifact.post);
-    }
+
     if (type === "TwitterPost") {
         let artifact = JSON.parse(body) as artifacts.TwitterPost;
         return renderArtifact(type, artifact.post);
