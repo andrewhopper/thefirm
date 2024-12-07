@@ -1,18 +1,14 @@
+
 'use client';
 import React from 'react';
 import * as artifacts from '../src/artifacts/artifacts';
-import { appendFileSync } from 'fs';
 
 interface RenderArtifactProps {
     type: string;
     body: object;
 }
 
-function logToFile(message: string) {
-    const timestamp = new Date().toISOString();
-    const logMessage = `${timestamp}: ${message}\n`;
-    appendFileSync('render-artifact.log', logMessage);
-}
+
 
 const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
     return (
@@ -41,14 +37,27 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
     }
     if (type === "ReportArtifact" || type === "ResearchArtifact") {
         let artifact = JSON.parse(body) as artifacts.ReportArtifact;
-        logToFile(`Rendering ${type} - Name: ${artifact.name}`);
-        logToFile(`Sections data: ${JSON.stringify(artifact.sections)}`);
-
         return (
             <div>
-                <h3>{type}</h3>
+                <h2 className="text-xl font-bold mb-4">{type}</h2>
                 <div>{artifact.name}</div>
-                <div>{artifact.sections as artifacts.ReportSection[]}</div>
+                <div>{JSON.stringify(artifact.sections)}</div>
+
+
+
+                {/* {artifact.sections.map((section: artifacts.ReportSection, index: number) => (
+                    <>
+                        <div key={index}>{section.name}</div>
+                        <div>
+                            {section.section_content.map((content: artifacts.ReportSectionContent, index: number) => (
+                                <>
+                                    <h4 key={index}>{content.name}</h4>
+                                    <div key={index}>{content.content}</div>
+                                </>
+                            ))}
+                        </div>
+                    </>
+                ))} */}
             </div>
         );
     }
