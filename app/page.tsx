@@ -204,7 +204,7 @@ export default function Home() {
                                 className="w-full"
                                 onClick={() => handleSubmitRequest(
                                     'ceo',
-                                    'content_writer',
+                                    'marketing_strategist',
                                     'ReportArtifact',
                                     'LinkedInPost',
                                     'Write a LinkedIn post about our new eco-friendly product line'
@@ -389,9 +389,9 @@ export default function Home() {
             </div>
             <div className="col-span-1 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Artifacts</h2>
-                {events.map((event, index) => {
+                {events.map((event: any, index) => {
                     try {
-                        if (JSON.parse(event.message).channel === 'artifacts') {
+                        if (event["has_artifact"] == true) {
                             return (
                                 <div key={index}>
                                     <RenderArtifact type={JSON.parse(event.message).artifact_type} body={JSON.parse(event.message).artifact_body} />
@@ -401,6 +401,7 @@ export default function Home() {
                     } catch (e) {
                         return (
                             <div key={index}>
+
                                 {JSON.stringify(event)}
                             </div>
                         );
