@@ -20,10 +20,10 @@ export function renderArtifact(type: string, body: string) {
 
 const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
 
-    if (type === "MemoArtifact") {
-        let artifact = body as artifacts.MemoArtifact;
-        return renderArtifact(type, artifact.memo);
-    }
+    // if (type === "MemoArtifact") {
+    //     let artifact = body as artifacts.MemoArtifact;
+    //     return renderArtifact(type, artifact.memo);
+    // }
     return (
         <div>
             <h1>{type}</h1>
