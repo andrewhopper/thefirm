@@ -1,4 +1,6 @@
 import { createClient } from 'redis';
+import winston from 'winston';
+
 import { RedisEventOrchestrator } from '../services/RedisEventOrchestrator';
 import marketing_manager from '../actors/team/marketing-strategist/profile';
 import PromptComposer from '../utils/prompt_composer';
@@ -14,6 +16,25 @@ import dotenv from 'dotenv';
 require('dotenv').config({
     path: '.env.local'
 });
+
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/combined.log' })
+    ]
+});
+
+// Add development console logging
+if (process.env.NODE_ENV !== 'production') {
+    logger.add(new winston.transports.Console({
+        format: winston.format.simple()
+    }));
+}
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -34,19 +55,20 @@ async function initializeWorker() {
     try {
         // Listen for specific events that require team member actions
         orchestrator.on('message', async ({ channel, message }) => {
-
+            let data;
+            try {
+                // Check if message is already an object
+                data = typeof message === 'object' ? message : JSON.parse(message);
+            } catch (error) {
+                console.error('Error parsing message:', error);
+                return;
+            }
 
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log(typeof message);
-            console.log("--------------------------------");
-            console.log("--------------------------------");
-            console.log("--------------------------------");
-            console.log("--------------------------------");
-            console.log("Received message on channel:", channel);
-            console.log("Message:", JSON.parse(message));
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log("--------------------------------");
@@ -58,7 +80,6 @@ async function initializeWorker() {
             console.log("--------------------------------");
             console.log("--------------------------------");
 
-            const data = JSON.parse(message);
             console.log(data['direction']);
             console.log('Iterating through message data keys:');
             Object.keys(data).forEach(key => {
@@ -79,27 +100,32 @@ async function initializeWorker() {
                     "json" // schema for output
                 );
                 console.log(prompt);
+                logger.info(`Prompt: ${prompt}`);
                 console.log("Calling OpenAI..."
                 );
                 // remove message from redis to prevent infinite loop
                 // Delete the processed message to prevent reprocessing
 
                 const result = await model.invoke(prompt);
+                logger.info(`Result: ${result}`);
+
 
                 // const result = "mocked LLM response";
 
                 await orchestrator.deleteAllEvents();
 
-                await orchestrator.publish("chat", JSON.stringify({
+                const data1 = {
                     // originalMessage: message,
                     direction: "outbound",
                     from: data.to,
                     to: data.from,
                     message_type: data.responseArtifact,
                     content: result
-                }));
+                }
+                logger.info(`Chat data: ${JSON.stringify(data1)}`);
+                await orchestrator.publish("chat", data1);
 
-                await orchestrator.publish("artifacts", JSON.stringify({
+                const data2 = {
                     // originalMessage: message,
                     direction: "outbound",
                     has_artifact: true,
@@ -107,20 +133,11 @@ async function initializeWorker() {
                     to: data.from,
                     message_type: data.responseArtifact,
                     content: result
-                }));
+                }
+                logger.info(`Artifacts data: ${JSON.stringify(data2)}`);
+                await orchestrator.publish("artifacts", data2);
 
 
-                // if (message.message.responseArtifact === "Brand") {
-                //     await orchestrator.publish("ux-designer", {
-                //         direction: "inbound",
-                //         details: "Please create the visual identity for the brand",
-                //         message: "",
-                //         responseArtifact: "BrandStyleGuide",
-                //         requestArtifact: "Brand",
-                //         from: 'brand_director',
-                //         to: 'ux_designer'
-                //     });
-                // }
 
                 console.log(result);
 

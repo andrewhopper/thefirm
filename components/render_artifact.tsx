@@ -1,27 +1,34 @@
-
 'use client';
 import React from 'react';
 import * as artifacts from '../src/artifacts/artifacts';
+import { appendFileSync } from 'fs';
 
 interface RenderArtifactProps {
     type: string;
-    body: string;
+    body: object;
 }
 
-export function renderArtifact(type: string, body: string) {
-    return (
-        <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">{type}</h2>
-            <div>{body}</div>
-        </div>
-    );
+function logToFile(message: string) {
+    const timestamp = new Date().toISOString();
+    const logMessage = `${timestamp}: ${message}\n`;
+    appendFileSync('render-artifact.log', logMessage);
 }
 
 const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
+    return (
+        <div>
+            <h1>{type}</h1>
+            <pre>{JSON.stringify(body)}</pre>
+            {/* {Object.keys(body).map((key) => (
+                <div key={key}>
+                    <b>{key}:</b> {(body as any)[key]}
+                </div>
+            ))} */}
+        </div>
+    );
     if (type === "LinkedInPost") {
-        return JSON.stringify(body);
-        //     let artifact = JSON.parse(body) as artifacts.LinkedInPost;
-        //     return renderArtifact(type, artifact.post);
+        let artifact = JSON.parse(body) as artifacts.LinkedInPost;
+        return renderArtifact(type, artifact.post);
     }
     if (type === "TwitterPost") {
         let artifact = JSON.parse(body) as artifacts.TwitterPost;
@@ -34,27 +41,14 @@ const RenderArtifact = ({ type, body }: RenderArtifactProps) => {
     }
     if (type === "ReportArtifact" || type === "ResearchArtifact") {
         let artifact = JSON.parse(body) as artifacts.ReportArtifact;
+        logToFile(`Rendering ${type} - Name: ${artifact.name}`);
+        logToFile(`Sections data: ${JSON.stringify(artifact.sections)}`);
+
         return (
             <div>
-                <h2 className="text-xl font-bold mb-4">{type}</h2>
+                <h3>{type}</h3>
                 <div>{artifact.name}</div>
-                <div>{JSON.stringify(artifact.sections)}</div>
-
-
-
-                {/* {artifact.sections.map((section: artifacts.ReportSection, index: number) => (
-                    <>
-                        <div key={index}>{section.name}</div>
-                        <div>
-                            {section.section_content.map((content: artifacts.ReportSectionContent, index: number) => (
-                                <>
-                                    <h4 key={index}>{content.name}</h4>
-                                    <div key={index}>{content.content}</div>
-                                </>
-                            ))}
-                        </div>
-                    </>
-                ))} */}
+                <div>{artifact.sections as artifacts.ReportSection[]}</div>
             </div>
         );
     }

@@ -2,7 +2,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { ReportArtifact } from '../src/artifacts/artifacts';
-import { LinkedInPreviews } from '@automattic/social-previews';
 import { Button } from '../components/ui/button';
 import { roles, getUserProfile } from '../src/actors/team/team';
 import { UserProfile } from '../src/user_profile';
@@ -13,12 +12,6 @@ import EventView from '../components/event_view';
 import RenderArtifact from '../components/render_artifact';
 import marketing_strategist from '@/src/actors/team/marketing_analyst/profile';
 import RedisWebSocket from '../src/services/websocker-client';
-interface MarketingReport {
-    result: string;
-    prompt: string;
-    result_type: string;
-}
-
 
 
 
@@ -81,6 +74,30 @@ export default function Home() {
         setRolesData(roles);
     }, []);
 
+    function deserialize(obj: any): any {
+        if (typeof obj === 'string') {
+            try {
+                return deserialize(JSON.parse(obj));
+            } catch {
+                return obj;
+            }
+        }
+
+        if (Array.isArray(obj)) {
+            return obj.map(item => deserialize(item));
+        }
+
+        if (obj !== null && typeof obj === 'object') {
+            const result: { [key: string]: any } = {};
+            for (const [key, value] of Object.entries(obj)) {
+                result[key] = deserialize(value);
+            }
+            return result;
+        }
+
+        return obj;
+    }
+
     useEffect(() => {
         const ws = new WebSocket('ws://localhost:8080');
 
@@ -95,24 +112,19 @@ export default function Home() {
             let msg = event_data;
             try {
                 console.log('STEP 4 - Parsing websocket message- SUCCESS');
-                msg = JSON.parse(event_data);
+                msg = deserialize(JSON.parse(event_data));
                 console.log('Successfully parsed websocket message (page.tsx 243):', msg);
             } catch (e) {
                 console.log('STEP 4 - Parsing websocket message- FAILURE');
                 console.log('Error parsing websocket message (page.tsx 240):', e);
             }
 
-            const data2: any = {}
-            Object.keys(msg).map((key, i) => (
-                key == 'message' ? (
-                    data2[key] = JSON.parse((msg as any)[key])
-                ) : (
-                    data2[key] = (msg as any)[key]
-                )
-            ))
+
+
+
 
             setEvents(prev => [...prev, {
-                ...data2,
+                ...msg,
                 timestamp: new Date().toISOString()
             }]);
 
@@ -149,11 +161,11 @@ export default function Home() {
                         <Button
                             className="mb-4"
                             onClick={() => handleSubmitRequest(
-                                'foo',
-                                'foo',
-                                'NoOp',
-                                'NoOp',
-                                'Test WebSocket Message'
+                                'ceo',
+                                'ceo',
+                                'MemoArtifact',
+                                'MemoArtifact',
+                                'Are you there?'
                             )}
                         >
                             Send Test WebSocket Message
@@ -390,15 +402,22 @@ export default function Home() {
             <div className="col-span-1 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Artifacts</h2>
                 {events.map((event: any, index) => {
-                    if (JSON.parse(event.message).direction == "outbound") {
+                    if (event.message.direction == "outbound") {
                         return (
-                            <div key={index}>
-                                {Object.keys(JSON.parse(event.message)).map((key) => (
-                                    <div key={key}><b>{key}:</b> {JSON.parse(event.message)[key]}</div>
-                                ))}
+                            <div key={`artifact-${event.key || index}`} className="p-10">
+                                <RenderArtifact type={event.message.message_type} body={event.message.content} />
                             </div>
                         )
                     }
+                    else {
+                        return (
+                            <div key={`debug-${event.key || index}`} className="p-10">
+                                <h1>websocket debugger: {typeof event}</h1>
+                                {JSON.stringify(event)}
+                            </div>
+                        )
+                    }
+
                 })}
             </div>
         </div>
