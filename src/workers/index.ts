@@ -96,8 +96,7 @@ async function initializeWorker() {
                     from: data.to,
                     to: data.from,
                     message_type: data.responseArtifact,
-                    content: result,
-                    message: result
+                    content: result
                 }));
 
                 await orchestrator.publish("artifacts", JSON.stringify({
@@ -107,8 +106,7 @@ async function initializeWorker() {
                     from: data.to,
                     to: data.from,
                     message_type: data.responseArtifact,
-                    content: result,
-                    message: result
+                    content: result
                 }));
 
 

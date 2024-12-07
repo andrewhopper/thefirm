@@ -390,29 +390,15 @@ export default function Home() {
             <div className="col-span-1 p-4 border rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Artifacts</h2>
                 {events.map((event: any, index) => {
-                    try {
-                        if (event["has_artifact"] == true) {
-                            return (
-                                <div key={index}>
-                                    <RenderArtifact type={JSON.parse(event.message).artifact_type} body={JSON.parse(event.message).artifact_body} />
-                                </div>
-                            );
-                        }
-                    } catch (e) {
+                    if (JSON.parse(event.message).direction == "outbound") {
                         return (
                             <div key={index}>
-
-                                {JSON.stringify(event)}
+                                {Object.keys(JSON.parse(event.message)).map((key) => (
+                                    <div key={key}><b>{key}:</b> {JSON.parse(event.message)[key]}</div>
+                                ))}
                             </div>
-                        );
+                        )
                     }
-                    // else {
-                    //     return (
-                    //         // <div key={index}>
-                    //         //     type: {JSON.parse(event.message).artifact_type}
-                    //         // </div>
-                    //     );
-                    // }
                 })}
             </div>
         </div>
