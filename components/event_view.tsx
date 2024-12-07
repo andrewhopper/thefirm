@@ -11,10 +11,13 @@ export default function EventView({ event }: EventViewProps) {
             {(() => {
                 return isExpanded ? (
                     <div onClick={() => setIsExpanded(false)} style={{ cursor: 'pointer' }}>
-                        <h1>Event Viewer: {typeof event}</h1>
                         <pre>
-                            {JSON.stringify(event)}
-
+                            {Object.keys(event).map((key, i) => (
+                                <div key={i} className="text-sm text-gray-600">
+                                    {key}:
+                                    {(event as any)[key]}
+                                </div>
+                            ))}
                         </pre>
 
                         <div className="text-sm text-gray-500 mt-1">(Click to hide)</div>

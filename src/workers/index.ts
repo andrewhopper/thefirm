@@ -57,15 +57,17 @@ async function initializeWorker() {
             console.log("--------------------------------");
             console.log("--------------------------------");
 
-            if (message.direction === "inbound") {
+            const data = JSON.parse(message);
+
+            if (data.direction === "inbound") {
                 try {
                     const prompt = PromptComposer(
-                        message.message.details,  // task
+                        data.details,  // task
                         "n/a",                       // @todo - pull from memory requester_context
-                        message.message.responseArtifact,                    // artifact
-                        getArtifactSchema(message.message.responseArtifact),  // artifact_schema
-                        getUserProfile(message.message.from),     // from
-                        getUserProfile(message.message.to),       // to
+                        data.responseArtifact,                    // artifact
+                        getArtifactSchema(data.responseArtifact),  // artifact_schema
+                        getUserProfile(data.from),     // from
+                        getUserProfile(data.to),       // to
                         "json" // schema for output
                     );
                     console.log(prompt);
@@ -112,16 +114,6 @@ async function initializeWorker() {
                         });
                     }
 
-                    // if (message.message.responseArtifact === "BrandStyleGuide") {
-                    //     await orchestrator.publish("ux-designer", {
-                    //         direction: "outbound",
-                    //         details: "Here's the style guide for the brand",
-                    //         responseArtifact: "BrandStyleGuide",
-                    //         requestArtifact: "Brand",
-                    //         from: 'ux-designer',
-                    //         to: 'brand_director'
-                    //     });
-                    // }
                     console.log(result);
                 }
                 catch (error) {

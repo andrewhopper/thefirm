@@ -19,151 +19,9 @@ interface MarketingReport {
     result_type: string;
 }
 
-async function fetchMarketingReport(topic: string, requester: string, dryrun = false): Promise<MarketingReport> {
-    const response = await fetch(`/api/marketing_report?topic=${encodeURIComponent(topic)}&requester=${requester}&dryrun=${dryrun}`);
-    const data = await response.json();
-    return data;
-}
-
-
-function renderBrand(brand: string) {
-    return <div>{brand}</div>;
-}
-
-function renderBrandStyleGuide(brandStyleGuide: string) {
-    return <div>{brandStyleGuide}</div>;
-}
-
-
-async function sendManagerReviewNotification(from: string, to: string, artifact_type: string, artifact_guid: string, artifact: string, context: string, task: string) {
-    // Send a notification about the manager review request
-    console.log('Sending manager review notification via ws');
-    const result = redisWs.sendMessage({
-        action: 'new_review_requested',
-        from: from,
-        to: to,
-        artifact_type: artifact_type,
-        artifact_guid: artifact_guid,
-        artifact: artifact,
-        context: context,
-        task: task,
-        timestamp: new Date().toISOString()
-    });
-    console.log(result);
-}
-
-
-async function managerReview(content: string): Promise<MarketingReport> {
 
 
 
-    const response = await fetch(`/api/manager_review?content=${encodeURIComponent(content)}`);
-    const data = await response.json();
-    alert(data.result);
-    return data;
-}
-
-async function fetchLinkedInPost(topic: string, requester: string, dryrun = false): Promise<MarketingReport> {
-    const response = await fetch(`/api/linkedin_post?topic=${encodeURIComponent(topic)}&requester=${requester}&dryrun=${dryrun}`);
-    const data = await response.json();
-    return data;
-}
-
-
-
-
-function useMarketingReport() {
-    const [report, setReport] = useState<MarketingReport | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<string | null>(null);
-
-    const getReport = async (topic: string, requester: string) => {
-        try {
-            setLoading(true);
-            setError(null);
-            const result = await fetchMarketingReport(topic, requester);
-            setReport(result);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { report, loading, error, getReport };
-}
-
-function useLinkedInPost() {
-    const [report, setReport] = useState<MarketingReport | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const getLinkedInPost = async (topic: string, requester: string) => {
-        try {
-            setLoading(true);
-            setError(null);
-            const result = await fetchLinkedInPost(topic, requester);
-            setReport(result);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { report, loading, error, getLinkedInPost };
-}
-
-function handleReviseSection(guid: string) {
-    console.log('Revise section with guid:', guid);
-    alert('not yet implemented, this will allow user to revise a particular subcomponent of an artifact');
-}
-
-function revisionUI(guid: string) {
-    return (
-        <div className="revision-form" style={{ border: '1px solid #ccc', padding: '16px', margin: '16px 0' }}>
-            <h4>Revision Form</h4>
-            <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="liked">Things you liked:</label>
-                <textarea
-                    id="liked"
-                    style={{
-                        width: '100%',
-                        minHeight: '100px',
-                        marginTop: '8px',
-                        padding: '8px'
-                    }}
-                />
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="changes">Things to change:</label>
-                <textarea
-                    id="changes"
-                    style={{
-                        width: '100%',
-                        minHeight: '100px',
-                        marginTop: '8px',
-                        padding: '8px'
-                    }}
-                />
-            </div>
-            <button
-                onClick={() => handleReviseSection(guid)}
-                style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#0070f3',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                }}
-            >
-                Revise Now
-            </button>
-        </div>
-    );
-}
 
 const testCases = [
     { from: 'ceo', to: 'marketing_strategist', requestArtifact: 'MemoArtifact', responseArtifact: 'ReportArtifact', details: 'research on the latest trends in the mental health app market' },
@@ -205,9 +63,6 @@ function handleSubmitRequest(to: string, from: string, requestArtifact: string, 
 export default function Home() {
 
 
-    const { report: marketingReport, loading: marketingLoading, error: marketingError, getReport } = useMarketingReport();
-    const { report: linkedInReport, loading: linkedInLoading, error: linkedInError, getLinkedInPost } = useLinkedInPost();
-    const [feedback, setFeedback] = useState<string | null>(null);
     const [showPrompt, setShowPrompt] = useState(false);
     const [showJson, setShowJson] = useState(false);
     const [showRevisionUI, setShowRevisionUI] = useState(false);
@@ -247,8 +102,17 @@ export default function Home() {
                 console.log('Error parsing websocket message (page.tsx 240):', e);
             }
 
+            const data2: any = {}
+            Object.keys(msg).map((key, i) => (
+                key == 'message' ? (
+                    data2[key] = JSON.parse((msg as any)[key])
+                ) : (
+                    data2[key] = (msg as any)[key]
+                )
+            ))
+
             setEvents(prev => [...prev, {
-                ...msg,
+                ...data2,
                 timestamp: new Date().toISOString()
             }]);
 
@@ -458,128 +322,9 @@ export default function Home() {
                                     Send Request
                                 </Button>
                             </form>
-                            {/* <Button className="mb-4"
-                                onClick={() => getReport('personal mental health apps', 'ceo')}
-                                disabled={marketingLoading}
-                            >
-                                Get Marketing Report for CEO on Personal Mental Health Apps
-                            </Button>
-                            <br />
-                            <Button
-                                className="mb-4"
-                                onClick={() => getReport('personal mental health apps', 'coo')}
-                                disabled={marketingLoading}
-                            >
-                                Get Marketing Report for COO on Todo <br /> list Apps popular with people with ADHD
-                            </Button>
-                            <br />
-                            <Button
-                                className="mb-4"
-                                onClick={() => getLinkedInPost('how education can be improved with AI', 'social_media_marketer')}
-                                disabled={linkedInLoading}
-                            >
-                                Create a LinkedIn Post about the latest AI trends
-                            </Button> */}
-                            {marketingLoading && <p>Loading...</p>}
-                            {marketingError && <p>Error: {marketingError}</p>}
-                            {linkedInLoading && <p>Loading...</p>}
-                            {linkedInError && <p>Error: {linkedInError}</p>}
+
                         </div>
 
-
-
-                        {marketingReport && (
-                            <div>
-                                {(() => {
-                                    try {
-                                        // this is json with string ```json as the beginning and ``` at the end
-                                        // strip the ```json and ``` at the beginning and end
-                                        // then parse the result
-                                        // also remove the \n at the beginning and end
-
-                                        // here's an example of the result string"json\n{\n  \"guid\": \"12345-abcde-67890-fghij\"
-                                        // update the code below to parse the result into json
-
-                                        const parsedResult = marketingReport.result.replace(/```json|```/g, '').replace(/^\n|\n$/g, '');
-                                        const jsonResult = JSON.parse(parsedResult);
-                                        return (
-                                            <>
-                                                <h3>Report Results</h3>
-                                                <div>
-                                                    <h4>Prompt:</h4>
-                                                    <div>
-                                                        {marketingReport.prompt && (
-                                                            <div>
-                                                                <Button
-                                                                    onClick={() => setShowPrompt(!showPrompt)}
-                                                                    variant="ghost"
-                                                                >
-                                                                    {showPrompt ? 'Hide Prompt' : 'Show Prompt'}
-                                                                </Button>
-                                                                {showPrompt && (
-                                                                    <pre className="mt-2">{marketingReport.prompt}</pre>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <h4>Type: {marketingReport.result_type}</h4>
-                                                </div>
-                                                <div>
-                                                    <h4>Results:</h4>
-                                                    <div>
-                                                        <Button
-                                                            onClick={() => setShowJson(!showJson)}
-                                                            variant="outline"
-                                                        >
-                                                            {showJson ? 'Hide Raw JSON' : 'Show Raw JSON'}
-                                                        </Button>
-                                                        {showJson && (
-                                                            <pre className="mt-2">
-                                                                {JSON.stringify(jsonResult, null, 2)}
-                                                            </pre>
-                                                        )}
-                                                    </div>
-                                                    {jsonResult && marketingReport.result_type === 'ReportArtifact' && jsonResult["sections"] && (
-                                                        <div className="mt-4">
-                                                            <h2>{jsonResult && jsonResult.title}</h2>
-                                                            <h4>Report Sections:</h4>
-                                                            {jsonResult.sections.map((section: any, index: number) => (
-                                                                <div key={index} className="mt-2">
-                                                                    <h5 className="font-bold">{section.section_title}</h5>
-                                                                    <p>{section.section_content.content}</p>
-                                                                    {!showRevisionUI && (
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                handleReviseSection(section.guid);
-                                                                                setShowRevisionUI(true);
-                                                                            }}
-                                                                            className="mt-2 text-sm text-blue-500 hover:text-blue-700"
-                                                                        >
-                                                                            Revise Section
-                                                                        </button>
-                                                                    )}
-                                                                    {showRevisionUI && (
-                                                                        revisionUI(section.guid)
-                                                                    )}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </>
-                                        );
-                                    } catch (error) {
-                                        return (
-                                            <div>
-                                                Error parsing report: {error instanceof Error ? error.message : 'Unknown error'}
-                                            </div>
-                                        );
-                                    }
-                                })()}
-                            </div>
-                        )}
 
 
 
@@ -597,15 +342,7 @@ export default function Home() {
                         events.map((event, index) => {
                             return (
                                 <div key={index}>
-                                    <h1>Event Viewer: {typeof event}</h1>
-                                    <div>
-                                        <h3>Event Keys:</h3>
-                                        {Object.keys(event).map((key, i) => (
-                                            <div key={i} className="text-sm text-gray-600">
-                                                {key}
-                                            </div>
-                                        ))}
-                                    </div>
+
 
                                     <EventView event={event} />
                                 </div>
