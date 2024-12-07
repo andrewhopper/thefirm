@@ -172,10 +172,9 @@ export class RedisEventOrchestrator extends EventEmitter {
         // Implement maintenance mode logic
     }
 
-    public async publish(channel: string, message: any) {
+    public async publish(channel: string, message: object) {
         try {
-            const messageString = typeof message === 'string' ? message : JSON.stringify(message);
-            await this.publisher.publish(channel, messageString);
+            await this.publisher.publish(channel, JSON.stringify(message));
             console.log(`Published to ${channel}:`, message);
         } catch (error) {
             console.error('Error publishing message:', error);

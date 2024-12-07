@@ -1,4 +1,6 @@
 import { createClient } from 'redis';
+import winston from 'winston';
+
 import { RedisEventOrchestrator } from '../services/RedisEventOrchestrator';
 import marketing_manager from '../actors/team/marketing-strategist/profile';
 import PromptComposer from '../utils/prompt_composer';
@@ -15,13 +17,32 @@ require('dotenv').config({
     path: '.env.local'
 });
 
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/combined.log' })
+    ]
+});
+
+// Add development console logging
+if (process.env.NODE_ENV !== 'production') {
+    logger.add(new winston.transports.Console({
+        format: winston.format.simple()
+    }));
+}
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 console.log(OPENAI_API_KEY);
 
 
 const model = new OpenAI({
-    modelName: "gpt-4o-mini",
+    modelName: "gpt-4o",
     temperature: 0.7,
     maxTokens: 2000,
 });
@@ -34,9 +55,20 @@ async function initializeWorker() {
     try {
         // Listen for specific events that require team member actions
         orchestrator.on('message', async ({ channel, message }) => {
+            let data;
+            try {
+                // Check if message is already an object
+                data = typeof message === 'object' ? message : JSON.parse(message);
+            } catch (error) {
+                console.error('Error parsing message:', error);
+                return;
+            }
 
-            console.log("Received message on channel:", channel);
-            console.log("Message:", message);
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log("--------------------------------");
+            console.log(typeof message);
             console.log("--------------------------------");
             console.log("--------------------------------");
             console.log("--------------------------------");
@@ -48,68 +80,67 @@ async function initializeWorker() {
             console.log("--------------------------------");
             console.log("--------------------------------");
 
-            if (message.message.direction === "inbound") {
-                try {
-                    const prompt = PromptComposer(
-                        message.message.details,  // task
-                        "n/a",                       // @todo - pull from memory requester_context
-                        message.message.responseArtifact,                    // artifact
-                        getArtifactSchema(message.message.responseArtifact),  // artifact_schema
-                        getUserProfile(message.message.from),     // from
-                        getUserProfile(message.message.to),       // to
-                        "json" // schema for output
-                    );
-                    console.log(prompt);
-                    console.log("Calling OpenAI..."
-                    );
-                    // remove message from redis to prevent infinite loop
-                    // Delete the processed message to prevent reprocessing
-
-                    const result = await model.invoke(prompt);
-
-                    // const result = "mocked LLM response";
-
-                    await orchestrator.deleteAllEvents();
+            console.log(data['direction']);
+            console.log('Iterating through message data keys:');
+            Object.keys(data).forEach(key => {
+                console.log(`${key}:`, data[key]);
+            });
 
 
-                    await orchestrator.publish(message.message.from, {
-                        // originalMessage: message,
-                        direction: "outbound",
-                        message_type: message.message.responseArtifact,
-                        content: result,
-                        message: result
-                    });
 
-                    if (message.message.responseArtifact === "Brand") {
-                        await orchestrator.publish("ux-designer", {
-                            message: {
-                                direction: "inbound",
-                                details: "Please create the visual identity for the brand",
-                                message: "",
-                                responseArtifact: "BrandStyleGuide",
-                                requestArtifact: "Brand",
-                                from: 'brand_director',
-                                to: 'ux_designer'
-                            }
-                        });
-                    }
+            if (data["direction"] == "inbound") {
 
-                    // if (message.message.responseArtifact === "BrandStyleGuide") {
-                    //     await orchestrator.publish("ux-designer", {
-                    //         direction: "outbound",
-                    //         details: "Here's the style guide for the brand",
-                    //         responseArtifact: "BrandStyleGuide",
-                    //         requestArtifact: "Brand",
-                    //         from: 'ux-designer',
-                    //         to: 'brand_director'
-                    //     });
-                    // }
-                    console.log(result);
+                const prompt = PromptComposer(
+                    data.details,  // task
+                    "n/a",                       // @todo - pull from memory requester_context
+                    data.responseArtifact,                    // artifact
+                    getArtifactSchema(data.responseArtifact),  // artifact_schema
+                    getUserProfile(data.from),     // from
+                    getUserProfile(data.to),       // to
+                    "json" // schema for output
+                );
+                console.log(prompt);
+                logger.info(`Prompt: ${prompt}`);
+                console.log("Calling OpenAI..."
+                );
+                // remove message from redis to prevent infinite loop
+                // Delete the processed message to prevent reprocessing
+
+                const result = await model.invoke(prompt);
+                logger.info(`Result: ${result}`);
+
+
+                // const result = "mocked LLM response";
+
+                await orchestrator.deleteAllEvents();
+
+                const data1 = {
+                    // originalMessage: message,
+                    direction: "outbound",
+                    from: data.to,
+                    to: data.from,
+                    message_type: data.responseArtifact,
+                    content: result
                 }
-                catch (error) {
-                    console.log(message)
-                    console.error('Error in worker:', error);
+                logger.info(`Chat data: ${JSON.stringify(data1)}`);
+                await orchestrator.publish("chat", data1);
+
+                const data2 = {
+                    // originalMessage: message,
+                    direction: "outbound",
+                    has_artifact: true,
+                    from: data.to,
+                    to: data.from,
+                    message_type: data.responseArtifact,
+                    content: result
                 }
+                logger.info(`Artifacts data: ${JSON.stringify(data2)}`);
+                await orchestrator.publish("artifacts", data2);
+
+
+
+                console.log(result);
+
             }
 
 

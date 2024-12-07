@@ -5,16 +5,30 @@ This repository contains the code for thefirm, a tool for building and managing 
 ## How to run the code
 
 Prerequisites:
-- Node.js
-- npm
-- Redis
+- Node.js (brew install node)
+- npm (brew install npm)
+- Redis (brew install redis)
+- tsx (npm install -g tsx)
+- screen (brew install screen)
+
+Overview:
+* Frontend => Event => Websocket Server (node) => Redis (pub/sub) 
+*  Workers (tsx) => LLM (openai) => Artifacts => Redis (pub/sub) => Websocket Server (Redis Subscriber) => Frontend
 
 1. Clone the repository
-2. Run `npm install` to install the dependencies
-3. Run `npm build` to complete the classes and enums
-4. Run `brew services start redis` to start the redis server
-5. Start the websocket server with `npm run start-ws`
-6. Start the background workers with `npm run start-workers`
+2. Create a `.env.local` file and add your OpenAI API key
+3. Run `npm install` to install the dependencies
+4. Run `npm compile-types` to complete the classes and enums
+5. Run `brew services start redis` to start the redis server
+6. Run `./bin/start.sh` to start the websocket server and workers in screen sessions
+
+   To manage the running services:
+   - List all sessions: `screen -ls`
+   - Attach to websocket server: `screen -r websocket-server`
+   - Attach to worker: `screen -r worker`
+   - Detach from a session: Press `Ctrl+A` then `d`
+   - Kill a session: `screen -X -S [session-name] quit`
+
 7. Run `npm run dev` to start the Next.js server
 
 ## Overview

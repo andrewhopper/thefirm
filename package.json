@@ -3,8 +3,6 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "start-ws": "tsx src/websocker-server.ts",
-        "start-workers": "tsx src/workers/index.ts",
         "start-overview": "tsx src/reports/overview.tsx",
         "test": "jest",
         "compile-types": "tsx ./bin/compile_types.tsx && tsx ./bin/compile_enums.tsx"
@@ -26,10 +24,12 @@
         "openai": "^4.73.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "react-markdown": "^9.0.1",
         "redis": "^4.7.0",
         "sass": "^1.81.0",
         "tailwind-merge": "^2.5.5",
         "tailwindcss-animate": "^1.0.7",
+        "winston": "^3.17.0",
         "ws": "^8.18.0"
     },
     "devDependencies": {
