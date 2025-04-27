@@ -1,0 +1,13 @@
+# Amazon Q configuration for thefirm
+
+# Project Overview
+- Name: thefirm
+- Architecture: MVC, Event-Driven, Microservices
+- Security Level: Medium
+- Performance Target: 200ms
+
+# Development Guidelines
+- Follow Dot AI structure (.ai directory)
+- Use ID naming convention
+- Reference documentation in comments
+- Follow project conventions

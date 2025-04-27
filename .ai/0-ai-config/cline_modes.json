@@ -1,0 +1,31 @@
+{
+  "projectName": "thefirm",
+  "architecture": [
+    "MVC",
+    "Event-Driven",
+    "Microservices"
+  ],
+  "designPatterns": [],
+  "securityLevel": "Medium",
+  "securityFeatures": [
+    "Authentication",
+    "Authorization"
+  ],
+  "performance": {
+    "scalability": "Medium (1000-10000 users)",
+    "responseTime": "200ms"
+  },
+  "environments": [
+    "Development",
+    "Staging",
+    "QA",
+    "Production",
+    "DR"
+  ],
+  "environmentDetails": "Dev: local setup, Staging: cloud-based, Prod: high-availability",
+  "guidelines": [
+    "Reference file IDs in documentation and code comments",
+    "Check folder-locks.md before modifying locked directories",
+    "Follow project conventions from .ai/1-context/project_conventions.md"
+  ]
+}

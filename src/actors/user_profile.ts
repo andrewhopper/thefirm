@@ -100,6 +100,189 @@ enum PreferredStrategy {
 
 }
 
+/**
+ * The Kirton Adaption-Innovation (KAI) theory measures individual preferences for creative problem solving and managing change.
+ * It defines a spectrum from Adaptors, who prefer structured, incremental improvements within existing systems,
+ * to Innovators, who prefer challenging norms and creating novel solutions. KAI emphasizes that both styles are equally valuable
+ * and necessary for effective collaboration. This model structures dimensions based on cognitive preferences observed in KAI,
+ * providing a scalable way to capture individual problem-solving styles across a -10 (Adaptor) to +10 (Innovator) range.
+ */
+
+enum PreferenceType {
+    Adaptor = "Adaptor",
+    Innovator = "Innovator",
+}
+
+// Lived experience at each endpoint
+interface LivedExperience {
+    cognitivePreference: string;
+    preferenceType: PreferenceType;
+}
+
+// Dimension with slugs
+interface Dimension {
+    name: string;
+    slug: string; // added slug
+    leftEndpoint: LivedExperience;
+    rightEndpoint: LivedExperience;
+}
+
+// Person with multiple dimensions
+interface Person {
+    name: string;
+    dimensions: Dimension[];
+}
+
+interface IndicatorNumberToLabel {
+    // Maps numeric preference scores (-10 to 10) to descriptive labels
+    preferenceScale: {
+        "-10": "Strong Dispreference";
+        "-5": "Slight Dispreference";
+        "0": "Neutral";
+        "5": "Slight Preference";
+        "10": "Strong Preference";
+    };
+}
+
+enum KAIStrengthEnum {
+    STRONG_DISPREFERENCE = "Strong Dispreference",
+    SLIGHT_DISPREFERENCE = "Slight Dispreference",
+    NEUTRAL = "Neutral",
+    SLIGHT_PREFERENCE = "Slight Preference",
+    STRONG_PREFERENCE = "Strong Preference"
+}
+
+interface KAIStrengthEnumToNumber {
+    [KAIStrengthEnum.STRONG_DISPREFERENCE]: -10,
+    [KAIStrengthEnum.SLIGHT_DISPREFERENCE]: -5,
+    [KAIStrengthEnum.NEUTRAL]: 0,
+    [KAIStrengthEnum.SLIGHT_PREFERENCE]: 5,
+    [KAIStrengthEnum.STRONG_PREFERENCE]: 10
+}
+
+// do a meta analysis of Predictive Index, DISC, and Gallup Strengths to look how they cluster these traits
+interface KaiNeuroStructure {
+    name: string;
+
+    // I love following rules and structure
+    // I hate rules and prefer making my own way
+    hates_rules: KAIStrengthEnum //(-10 to 10),
+
+    // I like solving problems as they are given
+    // I constantly question and reframe problems
+    like_reframing: KAIStrengthEnum //(-10 to 10),
+
+    // I prefer safe, predictable approaches
+    // I willingly take risks and embrace uncertainty
+    like_risk: KAIStrengthEnum //(-10 to 10),
+
+    // I prefer gradual and controlled changes  
+    // I seek sweeping, disruptive changes
+    like_disruptive_change: KAIStrengthEnum //(-10 to 10),
+
+    // I like working in an organized, planned way
+    // I work best when I can be spontaneous and fluid
+    like_spontaneity: KAIStrengthEnum //(-10 to 10),
+
+    // I focus heavily on details and precision
+    like_big_picture: KAIStrengthEnum //(-10 to 10),
+
+    // I cooperate naturally with authority figures
+    // I question and often challenge authority
+    like_freedom: KAIStrengthEnum //(-10 to 10),
+}
+
+
+
+
+// KAI-inspired Dimensions with slugs
+const KAI_Dimensions: Dimension[] = [
+    {
+        name: "Approach to Rules",
+        slug: "approach-to-rules",
+        leftEndpoint: {
+            cognitivePreference: "I love following rules and structure",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I hate rules and prefer making my own way",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Problem Framing",
+        slug: "problem-framing",
+        leftEndpoint: {
+            cognitivePreference: "I like solving problems as they are given",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I constantly question and reframe problems",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Risk Tolerance",
+        slug: "risk-tolerance",
+        leftEndpoint: {
+            cognitivePreference: "I prefer safe, predictable approaches",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I willingly take risks and embrace uncertainty",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Preferred Change",
+        slug: "preferred-change",
+        leftEndpoint: {
+            cognitivePreference: "I prefer gradual and controlled changes",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I seek sweeping, disruptive changes",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Work Style",
+        slug: "work-style",
+        leftEndpoint: {
+            cognitivePreference: "I like working in an organized, planned way",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I work best when I can be spontaneous and fluid",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Attention to Detail",
+        slug: "attention-to-detail",
+        leftEndpoint: {
+            cognitivePreference: "I focus heavily on details and precision",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I focus more on big ideas than small details",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+    {
+        name: "Response to Authority",
+        slug: "response-to-authority",
+        leftEndpoint: {
+            cognitivePreference: "I cooperate naturally with authority figures",
+            preferenceType: PreferenceType.Adaptor,
+        },
+        rightEndpoint: {
+            cognitivePreference: "I question and often challenge authority",
+            preferenceType: PreferenceType.Innovator,
+        },
+    },
+];
+
 export interface UserProfileAttributes {
     role: string; // role in the team,
     responsibility: string; // what the user does,
@@ -113,6 +296,7 @@ export interface UserProfileAttributes {
     artifact_types: string[]; // types of artifacts the user creates
     preferred_tools: string[]; // tools the user prefers to use
     preferred_strategies: string[]; // strategies the user prefers to use
+    kai_dimensions: Dimension[]; // KAI cognitive preferences across dimensions
     key_life_experiences: string[]; // key life experiences the user has had
     hobbies: string[]; // hobbies the user has
     education: string[]; // education the user has
@@ -212,4 +396,6 @@ class UserProfile {
     }
 }
 
-export { UserProfile, WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, AttentionToDetail, ArtifactType, PreferredTool, PreferredStrategy };
+export { UserProfile, WorkType, CommunicationStyle, RiskTolerance, Creativity, WorkResolution, AttentionToDetail, ArtifactType, PreferredTool, PreferredStrategy, PreferenceType };
+export type { LivedExperience, Dimension, Person };
+export { KAI_Dimensions };

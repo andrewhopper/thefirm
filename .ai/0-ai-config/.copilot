@@ -1,0 +1,22 @@
+# GitHub Copilot configuration for thefirm
+
+# Project Context
+This project follows the Dot AI structure. All documentation is in the .ai directory.
+
+# Architecture
+MVC, Event-Driven, Microservices
+
+# Design Patterns
+
+
+# Security Level
+Medium
+
+# Performance Requirements
+- Scale: Medium (1000-10000 users)
+- Target Response: 200ms
+
+# Documentation Guidelines
+- Use ID naming convention for files and sections
+- Reference documentation IDs in comments
+- Follow conventions in .ai/1-context/project_conventions.md
