@@ -3,34 +3,35 @@ import { UserProfile } from "../../user_profile";
 import { KaiNeuroStructure, KAIStrengthEnum } from "../../user_profile";
 
 const kaiNeuroStructure: KaiNeuroStructure = {
-    hates_rules: KAIStrengthEnum.STRONG_PREFERENCE,
-    like_reframing: KAIStrengthEnum.STRONG_PREFERENCE,
-    like_risk: KAIStrengthEnum.STRONG_PREFERENCE,
-    like_disruptive_change: KAIStrengthEnum.STRONG_PREFERENCE,
-    like_spontaneity: KAIStrengthEnum.STRONG_PREFERENCE,
+    hates_rules: KAIStrengthEnum.STRONG_DISPREFERENCE,
+    like_reframing: KAIStrengthEnum.STRONG_DISPREFERENCE,
+    like_risk: KAIStrengthEnum.STRONG_DISPREFERENCE,
+    like_disruptive_change: KAIStrengthEnum.STRONG_DISPREFERENCE,
+    like_spontaneity: KAIStrengthEnum.STRONG_DISPREFERENCE,
     like_big_picture: KAIStrengthEnum.STRONG_PREFERENCE,
-    like_freedom: KAIStrengthEnum.STRONG_PREFERENCE,
+    like_freedom: KAIStrengthEnum.NEUTRAL,
 }
 
 
 const a: UserProfileAttributes = {
-    role: "backend engineer",
-    responsibility: "build the backend",
-    mbti_type: "INTJ",
+    role: "grounded tactician",
+    responsibility: "support the company",
+    mbti_type: "INFJ",
     work_type: WorkType.TACTICAL,
     attention_to_detail: AttentionToDetail.HIGH,
     communication_style: CommunicationStyle.FORMAL,
-    risk_tolerance: RiskTolerance.MEDIUM,
-    creativity: Creativity.HIGH,
+    risk_tolerance: RiskTolerance.LOW,
+    creativity: Creativity.MEDIUM,
     work_resolution: WorkResolution.Tactical,
     artifact_types: [ArtifactType.CODE],
-    preferred_tools: ['nextjs', 'tailwind', 'supabase', 'postgres', 'nodejs', 'typescript'],
-    preferred_strategies: ['test_driven_development'],
+    preferred_tools: ['paper', 'word docs', 'email', 'excel'],
+    preferred_strategies: [],
     // @TODO - fix these
 
     // add each 
 
     kai_dimensions: kaiNeuroStructure,
+
 
     key_life_experiences: ['start_up', 'growth_stage', 'exit'],
     hobbies: ['reading', 'traveling', 'golf'],
