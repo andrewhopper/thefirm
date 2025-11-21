@@ -1,0 +1,74 @@
+{
+  "name": "proto-thefirm-ai-startup",
+  "current_phase": "IMPLEMENTATION",
+  "phase_number": 8,
+  "started": "2025-04-23T00:00:00Z",
+  "last_updated": "2025-11-20T00:00:00Z",
+  "phase_history": [
+    {
+      "phase": "IMPLEMENTATION",
+      "phase_number": 8,
+      "started": "2025-04-23T00:00:00Z",
+      "completed": null,
+      "deliverables_completed": false
+    }
+  ],
+  "status": "ACTIVE",
+  "description": "Tool for building and managing startups using AI agent teams that simulate startup team work. Features team configuration, workflows, artifacts, and reports with Redis pub/sub and WebSocket architecture.",
+  "success_criteria": [
+    "AI agent team simulation functional",
+    "WebSocket server + Redis pub/sub working",
+    "Team/workflow/artifact configuration system",
+    "Next.js frontend with real-time updates",
+    "LLM integration (OpenAI) operational",
+    "Worker system processing tasks"
+  ],
+  "metadata": {
+    "tech_stack": [
+      "Next.js",
+      "TypeScript",
+      "Node.js",
+      "Redis",
+      "WebSockets",
+      "OpenAI API",
+      "tsx"
+    ],
+    "xip_status": "none",
+    "priority": "high",
+    "test_track": null,
+    "prototype_type": "submodule",
+    "target_output": "Web Application + Worker System",
+    "target_audience": "Startup founders, entrepreneurs",
+    "domain": "ai-agents",
+    "categories": [
+      "ai-agents",
+      "startup-tools",
+      "simulation",
+      "team-management",
+      "workflow-automation"
+    ],
+    "tags": [
+      "submodule",
+      "external-repo",
+      "ai-agents",
+      "real-time"
+    ],
+    "number": "081",
+    "target_company_maturity": [
+      "mvp"
+    ],
+    "github_repo": "https://github.com/andrewhopper/thefirm"
+  },
+  "version": "0.1.0",
+  "version_history": [
+    {
+      "version": "0.1.0",
+      "date": "2025-11-20T00:00:00Z",
+      "phase": "IMPLEMENTATION",
+      "change_type": "major",
+      "description": "Added as submodule to monorepo"
+    }
+  ],
+  "uuid": "thefirm",
+  "directory_name": "proto-thefirm-ai-startup"
+}
